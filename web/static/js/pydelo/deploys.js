@@ -46,21 +46,27 @@ $(document).ready(function() {
         }
     }, vars["offset"], vars["limit"]);
     $("tbody").delegate(".rollback", "click", function () {
+        var deploy_id = $(this).attr("deploy_id");
         alert("running");
         update_deploy_by_id(
-            $(this).attr("deploy_id"),
+            deploy_id,
             {"action": "rollback"},
             function(data){
+                check_return(data);
+                var deploy_id = data["data"]["id"]
+                window.location.assign('/deploys/'+deploy_id.toString()+'/progress')
             });
-        window.location.reload();
     });
     $("tbody").delegate(".redeploy", "click", function () {
+        var deploy_id = $(this).attr("deploy_id");
         alert("running");
         update_deploy_by_id(
-            $(this).attr("deploy_id"),
+            deploy_id,
             {"action": "redeploy"},
-            function(){
+            function(data){
+                check_return(data);
+                var deploy_id = data["data"]["id"]
+                window.location.assign('/deploys/'+deploy_id.toString()+'/progress')
             });
-        window.location.reload();
     });
 })

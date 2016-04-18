@@ -27,19 +27,20 @@ class DeploysService(Base):
         t.start()
 
     def rollback(self, deploy):
-        rollback_deploy = self.create(
-            user_id=deploy.user_id,
-            project_id=deploy.project_id,
-            host_id=deploy.host_id,
-            mode=2,
-            branch=deploy.branch,
-            version=deploy.version,
-            softln_filename=deploy.softln_filename)
-        ssh = RemoteShell(host=deploy.host.ssh_host,
-                          port=deploy.host.ssh_port,
-                          user=deploy.host.ssh_user,
-                          passwd=deploy.host.ssh_pass)
+        t = threading.Thread(target=rollback_thread, args=(self, deploy))
+        # TODO 当我不使用下面的语句时，project和host貌似在线程里面会没有值，也许我要把lazy值设置成select或者其他
+        a = deploy.project, deploy.host
+        t.start()
 
+deploys = DeploysService()
+
+def rollback_thread(service, deploy):
+    ssh = RemoteShell(host=deploy.host.ssh_host,
+                      port=deploy.host.ssh_port,
+                      user=deploy.host.ssh_user,
+                      passwd=deploy.host.ssh_pass)
+
+    try:
         # before rollback
         logger.debug("before rollback:")
         before_rollback = deploy.project.before_rollback.replace("\r", "").replace("\n", " && ")
@@ -49,12 +50,14 @@ class DeploysService(Base):
                     deploy.project.deploy_dir, before_rollback))
             if rc:
                 raise Error(11000)
-        # deploy
+        service.update(deploy, progress=33)
+        # rollback
         logger.debug("rollback:")
         rc,stdout, stderr = ssh.exec_command("ln -snf {} {}".format(
             os.path.join(deploy.project.deploy_history_dir, deploy.softln_filename), deploy.project.deploy_dir))
         if rc:
             raise Error(11001)
+        service.update(deploy, progress=67)
 
         # after rollback
         logger.debug("after rollback:")
@@ -65,10 +68,12 @@ class DeploysService(Base):
                     deploy.project.deploy_dir, after_rollback))
             if rc:
                 raise Error(11002)
+    except Exception:
+        service.update(deploy, status=0)
+    else:
+        service.update(deploy, progress=100, status=1)
+    finally:
         ssh.close()
-        self.update(rollback_deploy, status=1)
-
-deploys = DeploysService()
 
 def deploy_thread(service, deploy):
     ssh = RemoteShell(host=deploy.host.ssh_host,

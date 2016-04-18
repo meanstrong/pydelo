@@ -5,7 +5,6 @@ $.extend({
             var data = data["data"];
             var width = "width: "+data["progress"].toString()+"%;";
             $("#progress-bar").attr("style", width);
-            console.log(progress);
             if (data["status"] == 2){
                 $("#progress-msg").text("running");
                 setTimeout("$.progress("+deploy_id+")",3000);

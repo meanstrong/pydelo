@@ -153,14 +153,32 @@ def api_post_deploy():
 def update_deploy_by_id(id):
     action = request.form.get("action")
     deploy = deploys.get(id)
-    deploy.user_id = g.user.id
     if action == "redeploy":
-        deploys.deploy(deploy)
-        return jsonify({'rc': 0})
+        new_deploy = deploys.create(
+            user_id=deploy.user_id,
+            project_id=deploy.project_id,
+            host_id=deploy.host_id,
+            mode=deploy.mode,
+            status=2,
+            branch=deploy.branch,
+            version=deploy.version,
+            softln_filename=deploy.softln_filename)
+        deploys.deploy(new_deploy)
+        return jsonify(dict(rc=0, data=dict(id=new_deploy.id)))
     elif action == "rollback":
-        deploys.rollback(deploy)
-        return jsonify({'rc': 0})
-    raise Error(10000, msg=None)
+        new_deploy = deploys.create(
+            user_id=deploy.user_id,
+            project_id=deploy.project_id,
+            host_id=deploy.host_id,
+            mode=2,
+            status=2,
+            branch=deploy.branch,
+            version=deploy.version,
+            softln_filename=deploy.softln_filename)
+        deploys.rollback(new_deploy)
+        return jsonify(dict(rc=0, data=dict(id=new_deploy.id)))
+    else:
+        raise Error(10000, msg=None)
 
 @app.route("/api/deploys/<int:id>", methods=["GET"])
 @authorize
