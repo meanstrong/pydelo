@@ -25,16 +25,16 @@ python init.py   # init some sql data
 Usage
 -----
 #### 1.Add project
-![image](https://github.com/meanstrong/pydelo/master/docs/create_project.png)
+![image](https://github.com/meanstrong/pydelo/raw/master/docs/create_project.png)
 
 #### 2.New deploy
-![image](https://github.com/meanstrong/pydelo/master/docs/create_deploy.png)
+![image](https://github.com/meanstrong/pydelo/raw/master/docs/create_deploy.png)
 
 #### 3.Deploy progress
-![image](https://github.com/meanstrong/pydelo/master/docs/deploy_progress.png)
+![image](https://github.com/meanstrong/pydelo/raw/master/docs/deploy_progress.png)
 
 #### 4.Deploys
-![image](https://github.com/meanstrong/pydelo/master/docs/deploys.png)
+![image](https://github.com/meanstrong/pydelo/raw/master/docs/deploys.png)
 
 Discussing
 ----------
