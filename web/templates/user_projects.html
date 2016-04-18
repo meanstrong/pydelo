@@ -1,0 +1,33 @@
+{% extends "nav.html" %}
+{% block head %}
+    <script src="{{ url_for('static', filename='js/pydelo/user_projects.js') }}"></script>
+{% endblock %}
+{% block content %}
+<div class="row">
+    <ol class="breadcrumb">
+        <li><a href="/projects">Home</a></li>
+        <li class="active">projects</li>
+    </ol>
+</div>
+<div class="row">
+    <!--form role="form" action="/host/creation" method="post"-->
+        <div class="row">
+            <div class="col-xs-2">
+                <select id="projects" multiple="multiple">
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <button id="add_projects" class="btn">+</button>
+            <button id="remove_projects" class="btn">-</button>
+        </div>
+        <div class="row">
+            <div class="col-xs-2">
+                <select id="projects_selected" multiple="multiple">
+                </select>
+            </div>
+        </div>
+        <button id="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+{% endblock %}

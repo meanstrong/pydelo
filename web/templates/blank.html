@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/pydelo/api.js') }}"></script>
+    {% block head %}{% endblock %}
+    <title>pydelo</title>
+</head>
+
+<body>
+<div class="container header">
+    <div class="row">
+        <div class="pull-left">
+            <h3>Pydelo</h3>
+        </div>
+    </div>
+</div>
+<hr>
+
+
+{% block body %}{% endblock %}
+
+</body>
+</html>
+
+
+
+

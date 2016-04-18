@@ -1,0 +1,53 @@
+{% extends "nav.html" %}
+{% block head %}
+    <script src="{{ url_for('static', filename='js/pydelo/deploy_create.js') }}"></script>
+{% endblock %}
+{% block content %}
+<div class="row">
+    <ol class="breadcrumb">
+        <li><a href="/deploys">Home</a></li>
+        <li class="active">Creation</li>
+    </ol>
+</div>
+<div class="row">
+    <!--form role="form" action="/deploys" method="GET"-->
+        <div class="row">
+            <div class="col-xs-2">
+                <label>project:</label>
+            </div>
+            <div class="col-xs-5">
+                <select class="form-control" id="projects" name="project_id">
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-2">
+                <label>repo branch:</label>
+            </div>
+            <div class="col-xs-5">
+                <select class="form-control" name="branch" id="branches">
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-2">
+                <label>repo commits:</label>
+            </div>
+            <div class="col-xs-5">
+                <select class="form-control" name="commit" id="commits">
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-2">
+                <label>host:</label>
+            </div>
+            <div class="col-xs-5">
+                <select class="form-control" name="host_id" id="hosts">
+                </select>
+            </div>
+        </div>
+        <button id="submit" class="btn btn-primary">确认</button>
+    </form>
+</div>
+{% endblock %}

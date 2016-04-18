@@ -1,0 +1,31 @@
+{% extends "nav.html" %}
+{% block head %}
+    <script src="{{ url_for('static', filename='js/pydelo/users.js') }}"></script>
+{% endblock %}
+{% block content %}
+<div class="row">
+    <ol class="breadcrumb">
+        <li><a href="/users">Home</a></li>
+    </ol>
+</div>
+<div class="row">
+    <a class="btn btn-primary btn-sm" href="/users/create">Add user</a>
+</div>
+<div class="row">
+    <table class="table table-bordered">
+        <!--caption>Deploys</caption-->
+        <thead>
+            <tr>
+                <th>name</th>
+                <th>action</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+<div class="row">
+    <ul class="pagination">
+    </ul>
+</div>
+{% endblock %}

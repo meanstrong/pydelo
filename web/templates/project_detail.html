@@ -1,0 +1,91 @@
+{% extends "nav.html" %}
+{% block head %}
+    <script src="{{ url_for('static', filename='js/pydelo/project_detail.js') }}"></script>
+{% endblock %}
+{% block content %}
+<div class="row">
+    <ol class="breadcrumb">
+        <li><a href="/projects">Home</a></li>
+        <li class="active">Detail</li>
+    </ol>
+</div>
+<div class="row">
+    <!--form role="form" action="/project" method="post"-->
+        <div class="row">
+            <div class="col-xs-1">
+                <label>name:</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="text" id="name" placeholder="project name" >
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-1">
+                <label>repo:</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="text" id="repo_url" placeholder="git remote url" >
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-5">
+                <label>checkout dir:</label>
+            </div>
+            <div class="col-xs-5">
+                <label>deploy dir:</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-5">
+                <input class="form-control" type="text" id="checkout_dir" >
+            </div>
+            <div class="col-xs-5">
+                <input class="form-control" type="text" id="deploy_dir" >
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-5">
+                <label>deploy history dir:</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-5">
+                <input class="form-control" type="text" id="deploy_history_dir" >
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-5">
+                <label>pre checkout:</label>
+            </div>
+            <div class="col-xs-5">
+                <label>pre deploy:</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-5">
+                <textarea class="form-control" type="text" id="before_checkout" rows="5"></textarea>
+            </div>
+            <div class="col-xs-5">
+                <textarea class="form-control" type="text" id="before_deploy" rows="5"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-5">
+                <label>post checkout:</label>
+            </div>
+            <div class="col-xs-5">
+                <label>post deploy:</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-5">
+                <textarea class="form-control" type="text" id="after_checkout" rows="5"></textarea>
+            </div>
+            <div class="col-xs-5">
+                <textarea class="form-control" type="text" id="after_deploy" rows="5"></textarea>
+            </div>
+        </div>
+        <button id="submit" class="btn btn-primary">提交</button>
+    </form>
+</div>
+{% endblock %}
