@@ -15,7 +15,7 @@ from web.services.hosts import hosts
 from web.services.projects import projects
 
 from .base import Base
-from .error import Error
+from web.utils.error import Error
 from .sessions import sessions
 
 logger = Logger("user service")

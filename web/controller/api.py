@@ -16,7 +16,7 @@ from web.services.users import users
 from web.services.hosts import hosts
 from web.services.deploys import deploys
 from web.services.projects import projects
-from web.services.error import Error
+from web.utils.error import Error
 from .login import authorize
 
 from flask import request, jsonify, g

@@ -12,7 +12,7 @@ from .base import Base
 from web.utils.git import Git
 from web.utils.localshell import LocalShell
 from web.utils.remoteshell import RemoteShell
-from web.services.error import Error
+from web.utils.error import Error
 
 logger = Logger("deploy service")
 
@@ -87,7 +87,7 @@ def deploy_thread(service, deploy):
         before_checkout = deploy.project.before_checkout.replace("\r", "").replace("\n", " && ")
         if before_checkout:
             LocalShell.check_call(
-                "WORKSPACE='{0}' && cd $WORKSPACE && {1}".format(
+                "WORKSPACE='{0}' && mkdir -p $WORKSPACE && cd $WORKSPACE && {1}".format(
                     deploy.project.checkout_dir, before_checkout),
                 shell=True)
         service.update(deploy, progress=17)

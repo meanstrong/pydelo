@@ -4,6 +4,7 @@ __author__ = 'Rocky Peng'
 
 from web.utils.localshell import LocalShell
 from web.utils.log import Logger
+from web.utils.error import Error
 
 logger = Logger("GIT")
 
