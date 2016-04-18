@@ -22,6 +22,20 @@ vi web/config.py # set up module config such as mysql connector
 python init.py   # init some sql data 
 ```
 
+Usage
+-----
+#### 1.Add project
+![image](https://github.com/meanstrong/pydelo/dev/docs/create_project.png)
+
+#### 2.New deploy
+![image](https://github.com/meanstrong/pydelo/dev/docs/create_deploy.png)
+
+#### 3.Deploy progress
+![image](https://github.com/meanstrong/pydelo/dev/docs/deploy_progress.png)
+
+#### 4.Deploys
+![image](https://github.com/meanstrong/pydelo/dev/docs/deploys.png)
+
 Discussing
 ----------
 - email: pmq2008@gmail.com
