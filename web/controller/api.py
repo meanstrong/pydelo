@@ -141,6 +141,7 @@ def api_post_deploy():
         project_id=project_id,
         host_id=host_id,
         mode=0,
+        status=2,
         branch=branch,
         version=commit,
         softln_filename=time.strftime("%Y%m%d-%H%M%S") + "-" + commit,

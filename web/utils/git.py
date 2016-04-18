@@ -39,7 +39,7 @@ class Git(object):
         rc = LocalShell.call(shell, shell=True)
         # destination path '.' already exists and is not an empty directory.
         if rc == 128:
-            shell = ("cd {0} && git clean -xdfq && git reset -q --hard && git checkout -q master && git remote update && git remote prune origin && git pull -q --all && git branch | grep -v \\* | xargs git branch -D").format(self.dest)
+            shell = ("cd {0} && git clean -xdfq && git reset -q --hard && git remote update && git checkout -q master && git remote prune origin && git pull -q --all && git branch | grep -v \\* | xargs git branch -D").format(self.dest)
             rc = LocalShell.call(shell, shell=True)
             # branch name required
             if rc == 123:
