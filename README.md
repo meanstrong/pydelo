@@ -9,6 +9,7 @@ Requirements
 * MySQL
 * Python
 * Python site-package(flask, flask-sqlalchemy, pymysql, paramiko)
+
 That's all.
 
 Installation

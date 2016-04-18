@@ -11,7 +11,7 @@ $(document).ready(function() {
         vars["limit"] = parseInt(vars["limit"])
     }
     $("table tbody").empty();
-    get_deploys(vars["offset"], vars["limit"], function (data) {
+    get_deploys(function (data) {
         check_return(data);
         var data = data["data"];
         $.each(data["deploys"], function(i, n) {
@@ -20,18 +20,22 @@ $(document).ready(function() {
             tr.append($("<td></td>").text(n["project"]["name"]));
             tr.append($("<td></td>").text(n["branch"]));
             tr.append($("<td></td>").text(n["version"]));
-            if (n["is_success"]){
+            if (n["status"] == 1){
                 tr.append($("<td></td>").text("success"));
-            } else {
+            } else if(n["status"] == 0){
                 tr.append($("<td></td>").text("fail"));
+            } else {
+                tr.append($("<td></td>").text("running"));
             }
             tr.append($("<td></td>").text(n["updated_at"]));
-            if (n["is_success"]){
+            if (n["status"] == 1){
                 tr.append($("<td></td>").append($("<a href=\"javascript:void(0)\" deploy_id="+n["id"].toString()+" class=\"rollback\">rollback</a>")));
                 //tr.append($("<td></td>").text("rollback to this version"));
-            } else {
+            } else if(n["status"] == 0){
                 tr.append($("<td></td>").append($("<a href=\"javascript:void(0)\" deploy_id="+n["id"].toString()+" class=\"redeploy\">redeploy</a>")));
                 //tr.append($("<td></td>").text("see log"));
+            } else {
+                tr.append($("<td></td>"));
             }
             $("table tbody").append(tr);
         });
@@ -40,7 +44,7 @@ $(document).ready(function() {
             $(".pagination").append($("<li><a href=\"/deploys?offset="+offset+"&limit="+vars["limit"]+"\">"+i.toString()+"</a></li>"));
             offset += vars["limit"];
         }
-    });
+    }, vars["offset"], vars["limit"]);
     $("tbody").delegate(".rollback", "click", function () {
         alert("running");
         update_deploy_by_id(

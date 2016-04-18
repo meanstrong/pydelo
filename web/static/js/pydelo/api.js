@@ -93,12 +93,30 @@ function update_user_projects(user_id, data, callback) {
     });
 }
 
-function get_deploys(offset, limit, callback) {
-    if(arguments.length == 1){
-        $.get("/api/deploys", arguments[0], "json");
-    }else{
-        $.get("/api/deploys?offset="+offset.toString()+"&limit="+limit.toString(), callback, "json");
+function get_deploys(callback, offset, limit) {
+    var url = "/api/deploys";
+    if (typeof(offset) != "undefined" && typeof(limit) != "undefined"){
+        url += "?offset="+offset.toString()+"&limit="+limit.toString();
     }
+    $.get(url, callback, "json");
+}
+
+function create_deploy(project_id, host_id, data, callback){
+    $.post("/api/deploys?project_id="+project_id+"&host_id="+host_id, data, callback, "json");
+}
+
+function update_deploy_by_id(id, data, callback) {
+    $.ajax({
+        url: "/api/deploys/"+id.toString(),
+        type: "PUT",
+        data: data,
+        success : callback,
+        dataType: "json"
+    });
+}
+
+function get_deploy_progress(deploy_id, callback) {
+    $.get("/api/deploys/"+deploy_id.toString(), callback, "json");
 }
 
 function get_projects(offset, limit, callback) {
@@ -107,10 +125,6 @@ function get_projects(offset, limit, callback) {
     }else{
         $.get("/api/projects?offset="+offset.toString()+"&limit="+limit.toString(), callback, "json");
     }
-}
-
-function create_deploy(project_id, host_id, data, callback){
-    $.post("/api/deploys?project_id="+project_id+"&host_id="+host_id, data, callback, "json");
 }
 
 function get_project_by_id(id, callback) {
@@ -130,16 +144,6 @@ function create_project(data, callback) {
 function update_project_by_id(id, data, callback) {
     $.ajax({
         url: "/api/projects/"+id.toString(),
-        type: "PUT",
-        data: data,
-        success : callback,
-        dataType: "json"
-    });
-}
-
-function update_deploy_by_id(id, data, callback) {
-    $.ajax({
-        url: "/api/deploys/"+id.toString(),
         type: "PUT",
         data: data,
         success : callback,

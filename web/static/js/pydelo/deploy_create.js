@@ -66,7 +66,8 @@ $(document).ready(function() {
              "commit" : $("#commits").val()},
             function (data) {
                 check_return(data);
-                window.location.assign('/deploys')
+                var id = data["data"]["id"];
+                window.location.assign('/deploys/'+id.toString()+'/progress')
             }
         );
         $("#submit").text("确认").removeAttr("disabled");

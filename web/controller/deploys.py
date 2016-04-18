@@ -15,3 +15,9 @@ def deploys():
 @authorize
 def deploys_new():
     return render_template("deploy_create.html")
+
+@app.route("/deploys/<int:id>/progress", methods=["GET"])
+@authorize
+def deploy_progress(id):
+    return render_template("deploy_progress.html")
+

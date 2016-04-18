@@ -15,7 +15,7 @@ class Deploys(JsonSerializer, db.Model):
     branch = db.Column(db.String(32))
     version = db.Column(db.String(32))
     progress = db.Column(db.Integer, default=0)
-    is_success = db.Column(db.Integer, default=0)
+    status = db.Column(db.Integer, default=0)
     softln_filename = db.Column(db.String(64))
     comment = db.Column(db.Text, default="")
     created_at = db.Column(db.DateTime, default=db.func.now())

@@ -146,7 +146,7 @@ def api_post_deploy():
         softln_filename=time.strftime("%Y%m%d-%H%M%S") + "-" + commit,
         )
     deploys.deploy(deploy)
-    return jsonify(dict(rc=0))
+    return jsonify(dict(rc=0, data=dict(id=deploy.id)))
 
 @app.route("/api/deploys/<int:id>", methods=["PUT"])
 @authorize
@@ -161,6 +161,12 @@ def update_deploy_by_id(id):
         deploys.rollback(deploy)
         return jsonify({'rc': 0})
     raise Error(10000, msg=None)
+
+@app.route("/api/deploys/<int:id>", methods=["GET"])
+@authorize
+def get_deploy_progress_by_id(id):
+    deploy = deploys.get(id)
+    return jsonify(dict(rc=0, data=deploy))
 
 # 获取所有hosts
 @app.route("/api/hosts", methods=["GET"])
