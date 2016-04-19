@@ -97,7 +97,7 @@ def api_deploys():
 def api_projects():
     offset = request.args.get("offset", None, type=int)
     limit = request.args.get("limit", None, type=int)
-    data = users.get_user_projects(g.user)
+    data = users.get_user_projects(g.user, offset=offset, limit=limit, order_by="name")
     return jsonify(dict(rc=0, data=data))
 
 @app.route("/api/projects", methods=["POST"])
@@ -193,7 +193,7 @@ def get_deploy_progress_by_id(id):
 def api_hosts():
     offset = request.args.get("offset", None, type=int)
     limit = request.args.get("limit", None, type=int)
-    data = users.get_user_hosts(g.user)
+    data = users.get_user_hosts(g.user, offset=offset, limit=limit)
     return jsonify(dict(rc=0, data=data))
 
 # 获取某个host

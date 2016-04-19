@@ -85,6 +85,7 @@ def deploy_thread(service, deploy):
         # before checkout
         git = Git(deploy.project.checkout_dir, deploy.project.repo_url)
         before_checkout = deploy.project.before_checkout.replace("\r", "").replace("\n", " && ")
+        logger.debug("before_checkout"+before_checkout)
         if before_checkout:
             LocalShell.check_call(
                 "WORKSPACE='{0}' && mkdir -p $WORKSPACE && cd $WORKSPACE && {1}".format(
