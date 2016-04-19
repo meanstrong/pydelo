@@ -2,8 +2,8 @@
 __author__ = 'Rocky Peng'
 
 # -- app config --
-DEBUG = True
-port = 9998
+DEBUG = False
+PORT = 9998
 
 # -- mysql config --
 DB_HOST = "127.0.0.1"
