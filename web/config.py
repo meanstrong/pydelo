@@ -13,8 +13,7 @@ DB_PASS = "abc$#@!8008CBA"
 DB_NAME = "pydelo"
 
 # -- web app config --
-DEBUG = True
-SECRET_KEY = "secret-key"
-SESSION_COOKIE_NAME = "pydelo"
-PERMANENT_SESSION_LIFETIME = 3600 * 24 * 30
-SITE_COOKIE = "pydelo-ck"
+#SECRET_KEY = "secret-key"
+#SESSION_COOKIE_NAME = "pydelo"
+#PERMANENT_SESSION_LIFETIME = 3600 * 24 * 30
+#SITE_COOKIE = "pydelo-ck"
