@@ -151,6 +151,19 @@ function update_project_by_id(id, data, callback) {
     });
 }
 
+function get_tags_by_id(project_id, callback) {
+    $.get("/api/projects/"+project_id.toString()+"/tags", callback, "json");
+}
+
+function get_branches_by_id(project_id, callback) {
+    $.get("/api/projects/"+project_id.toString()+"/branches", callback, "json");
+}
+
+function get_commits_by_id(project_id, branch, callback) {
+    $.get("/api/projects/"+project_id.toString()+"/branches/"+branch+"/commits",
+          callback,
+          "json");
+}
 function get_hosts(callback, offset, limit) {
     var url = "/api/hosts";
     if (typeof(offset) != "undefined" && typeof(limit) != "undefined"){
@@ -191,14 +204,4 @@ function update_host_by_id(id, data, callback) {
         success : callback,
         dataType: "json"
     });
-}
-
-function get_branches_by_id(project_id, callback) {
-    $.get("/api/projects/"+project_id.toString()+"/branches", callback, "json");
-}
-
-function get_commits_by_id(project_id, branch, callback) {
-    $.get("/api/projects/"+project_id.toString()+"/branches/"+branch+"/commits",
-          callback,
-          "json");
 }

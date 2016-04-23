@@ -22,6 +22,19 @@
         </div>
         <div class="row">
             <div class="col-xs-2">
+                <label>deploy mode:</label>
+            </div>
+            <div class="col-xs-5">
+                <div class="radio-inline">
+                    <input type="radio" name="deploy_mode" value="0" checked>Branch</input>
+                </div>
+                <div class="radio-inline">
+                    <input type="radio" name="deploy_mode" value="1">Tag</input>
+                </div>
+            </div>
+        </div>
+        <div class="row deploy_branch_mode">
+            <div class="col-xs-2">
                 <label>repo branch:</label>
             </div>
             <div class="col-xs-5">
@@ -29,12 +42,21 @@
                 </select>
             </div>
         </div>
-        <div class="row">
+        <div class="row deploy_branch_mode">
             <div class="col-xs-2">
                 <label>repo commits:</label>
             </div>
             <div class="col-xs-5">
                 <select class="form-control" name="commit" id="commits">
+                </select>
+            </div>
+        </div>
+        <div class="row deploy_tag_mode" style="display: none;">
+            <div class="col-xs-2">
+                <label>repo tags:</label>
+            </div>
+            <div class="col-xs-5">
+                <select class="form-control" name="tag" id="tags">
                 </select>
             </div>
         </div>

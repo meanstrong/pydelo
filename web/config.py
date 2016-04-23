@@ -2,7 +2,7 @@
 __author__ = 'Rocky Peng'
 
 # -- app config --
-DEBUG = False
+DEBUG = True
 PORT = 9998
 
 # -- mysql config --

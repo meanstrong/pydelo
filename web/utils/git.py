@@ -22,6 +22,14 @@ class Git(object):
         stdout = [s.strip(" ").split("/", 1)[1] for s in stdout if "->" not in s]
         return stdout
 
+    def tag(self):
+        shell = "cd {0} && git fetch -q -a && git tag".format(self.dest)
+        stdout = LocalShell.check_output(shell, shell=True)
+        if stdout:
+            return stdout.strip().split("\n")
+        else:
+            return []
+
     def log(self, branch):
         shell = ("cd {0} && git checkout -q {1} && git fetch -q --all && "
                  "git log -20 --pretty=\"%h  %an  %s\"").format(self.dest, branch)
@@ -47,9 +55,14 @@ class Git(object):
         if rc != 0:
             raise Error(12000)
 
-    def checkout(self, branch, version):
+    def checkout(self, branch=None, version=None, tag=None):
         logger.debug("checkout:")
-        LocalShell.check_call(
-            "cd {0} && git checkout -B {1} -t origin/{1} && git pull -q origin {1} && git reset --hard {2}".format(
-                self.dest, branch, version),
-            shell=True)
+        if branch is None or version is None:
+            LocalShell.check_call(
+                "cd {0} && git checkout {1}".format(self.dest, tag),
+                shell=True)
+        else:
+            LocalShell.check_call(
+                "cd {0} && git checkout -B {1} -t origin/{1} && git pull -q origin {1} && git reset --hard {2}".format(
+                    self.dest, branch, version),
+                shell=True)

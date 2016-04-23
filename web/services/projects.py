@@ -25,6 +25,11 @@ class ProjectsService(Base):
         git = Git(project.checkout_dir, project.repo_url)
         return git.branch()
 
+    def git_tag(self, project_id):
+        project = self.get(project_id)
+        git = Git(project.checkout_dir, project.repo_url)
+        return git.tag()
+
     def git_log(self, project_id, branch):
         project = self.get(project_id)
         git = Git(project.checkout_dir, project.repo_url)

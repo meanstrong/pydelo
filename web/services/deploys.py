@@ -94,7 +94,10 @@ def deploy_thread(service, deploy):
         service.update(deploy, progress=17)
         # checkout
         git.clone()
-        git.checkout(deploy.branch, deploy.version)
+        if deploy.mode == 0:
+            git.checkout(deploy.branch, deploy.version)
+        else:
+            git.checkout(tag=deploy.version)
         service.update(deploy, progress=33)
         # after checkout
         after_checkout = deploy.project.after_checkout.replace("\r", "").replace("\n", " && ")
