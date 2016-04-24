@@ -13,15 +13,17 @@ Requirements
 * Bash(git, rsync, ssh, sshpass)
 * MySQL
 * Python
-* Python site-package(flask, flask-sqlalchemy, pymysql, paramiko) # 建议使用virtualenv来部署
+* Python site-package(flask, flask-sqlalchemy, pymysql, paramiko)
 
 That's all.
 
 Installation
 ------------
 ```
+apt-get install rsync sshpass
 git clone git@github.com:meanstrong/pydelo.git
 cd pydelo
+pip install -r pip_requirements.txt # 建议使用virtualenv来部署
 mysql -h root -p pydelo < db-schema.sql  # create database and tables
 vi web/config.py # set up module config such as mysql connector
 python init.py   # add some data to mysql or you can do it yourself
