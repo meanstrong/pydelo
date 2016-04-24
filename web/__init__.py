@@ -17,4 +17,4 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.json_encoder = JSONEncoder
 db = SQLAlchemy(app)
 
-from controller import api, login, deploys, project, host, users
+from .controller import api, login, deploys, project, host, users
