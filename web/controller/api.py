@@ -9,7 +9,7 @@ import string
 from hashlib import md5
 
 from web.utils.log import Logger
-logger = Logger("WEBHOOK")
+logger = Logger("API")
 
 from web import app
 from web.services.users import users
@@ -20,33 +20,6 @@ from web.utils.error import Error
 from .login import authorize
 
 from flask import request, jsonify, g
-
-
-#@app.route('/api/deploy/push_events', methods=["POST"])
-#@authorize
-#def push_events():
-#    project = Project(user_id=g.user.get_id())
-#    args = request.args.to_dict()
-#    data = request.json
-#    logger.debug(args)
-#    logger.debug(data)
-#    # 只针对dev分支进行deploy
-#    if data["ref"] == "refs/heads/dev" and data["total_commits_count"] > 0:
-#        try:
-#            project.start_deploy_by_branch_version(
-#                project_id=args["project_id"],
-#                host_id=args["host_id"],
-#                branch=data["ref"].split("/", 2)[-1],
-#                version=data["after"][:7])
-#        except Error as err:
-#            return jsonify({"rc": err.rc, "err": err.msg}), 406
-#        except Exception as err:
-#            logger.error(traceback.format_exc())
-#            return "ERROR",500
-#        else:
-#            return jsonify({"rc": 0}), 200
-#    else:
-#        return jsonify({"rc": 1}), 204
 
 @app.errorhandler(Error)
 def error(err):
