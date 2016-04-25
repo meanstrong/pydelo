@@ -4,6 +4,10 @@ from web.services.users import users
 from web.services.projects import projects
 
 apikey = ''.join(random.choice(string.letters+string.digits) for _ in range(32))
+users.create(name="root",
+             password=md5("123456".encode("utf-8")).hexdigest().upper(),
+             apikey=apikey,
+             role=1)
 users.create(name="demo",
              password=md5("123456".encode("utf-8")).hexdigest().upper(),
              apikey=apikey)
