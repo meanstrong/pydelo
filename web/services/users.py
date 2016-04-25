@@ -25,7 +25,7 @@ class UsersService(Base):
     __model__ = Users
 
     def login(self, username, password):
-        password = md5(password).hexdigest().upper()
+        password = md5(password.encode("utf-8")).hexdigest().upper()
         user = self.first(name=username, password=password)
         if user is None:
             raise Error(13000)

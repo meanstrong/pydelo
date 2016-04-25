@@ -30,7 +30,7 @@ def error(err):
 @authorize
 def api_update_accounts():
     password = request.form.get("password")
-    password = md5(password).hexdigest().upper()
+    password = md5(password.encode("utf-8")).hexdigest().upper()
     users.update(g.user, password=password)
     return jsonify(dict(rc=0))
 
