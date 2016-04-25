@@ -3,9 +3,12 @@
 __author__ = 'Rocky Peng'
 
 from datetime import datetime
+import sys
 import time
 import random
 import string
+if sys.version_info > (3,):
+    string.letters = string.ascii_letters
 from hashlib import md5
 
 from web import db

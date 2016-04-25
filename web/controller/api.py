@@ -6,6 +6,9 @@ import json
 import time
 import random
 import string
+import sys
+if sys.version_info > (3,):
+    string.letters = string.ascii_letters
 from hashlib import md5
 
 from web.utils.log import Logger
