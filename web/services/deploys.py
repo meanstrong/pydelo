@@ -46,14 +46,14 @@ def rollback_thread(service, deploy):
         before_rollback = deploy.project.before_rollback.replace("\r", "").replace("\n", " && ")
         if before_rollback:
             rc, stdout, stderr = ssh.exec_command(
-                "WORKSPACE='{}' && cd $WORKSPACE && {}".format(
+                "WORKSPACE='{0}' && cd $WORKSPACE && {1}".format(
                     deploy.project.deploy_dir, before_rollback))
             if rc:
                 raise Error(11000)
         service.update(deploy, progress=33)
         # rollback
         logger.debug("rollback:")
-        rc,stdout, stderr = ssh.exec_command("ln -snf {} {}".format(
+        rc,stdout, stderr = ssh.exec_command("ln -snf {0} {1}".format(
             os.path.join(deploy.project.deploy_history_dir, deploy.softln_filename), deploy.project.deploy_dir))
         if rc:
             raise Error(11001)
@@ -109,21 +109,21 @@ def deploy_thread(service, deploy):
         service.update(deploy, progress=50)
         # before deploy
         rc, stdout, stderr = ssh.exec_command(
-            "mkdir -p {}".format(
+            "mkdir -p {0}".format(
                 os.path.join(deploy.project.deploy_history_dir, deploy.softln_filename)))
         if rc:
             raise Error(11003)
 
         logger.debug("before deploy:")
         rc, stdout, stderr = ssh.exec_command(
-            "WORKSPACE='{}' && cd $WORKSPACE && ls -1t | tail -n +20 | xargs rm -rf".format(
+            "WORKSPACE='{0}' && cd $WORKSPACE && ls -1t | tail -n +20 | xargs rm -rf".format(
                 deploy.project.deploy_history_dir))
         if rc:
             raise Error(11000)
         before_deploy = deploy.project.before_deploy.replace("\r", "").replace("\n", " && ")
         if before_deploy:
             rc, stdout, stderr = ssh.exec_command(
-                "WORKSPACE='{}' && cd $WORKSPACE && {}".format(
+                "WORKSPACE='{0}' && cd $WORKSPACE && {1}".format(
                     deploy.project.deploy_dir, before_deploy))
             if rc:
                 raise Error(11000)
@@ -139,7 +139,7 @@ def deploy_thread(service, deploy):
             ssh_port=deploy.host.ssh_port,
             ssh_pass=deploy.host.ssh_pass)
         LocalShell.check_call(shell, shell=True)
-        rc,stdout, stderr = ssh.exec_command("ln -snf {} {}".format(
+        rc,stdout, stderr = ssh.exec_command("ln -snf {0} {1}".format(
             os.path.join(deploy.project.deploy_history_dir, deploy.softln_filename), deploy.project.deploy_dir))
         if rc:
             raise Error(11001)
