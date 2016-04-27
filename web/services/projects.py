@@ -23,16 +23,16 @@ class ProjectsService(Base):
     def git_branch(self, project_id):
         project = self.get(project_id)
         git = Git(project.checkout_dir, project.repo_url)
-        return git.branch()
+        return git.remote_branch()
 
     def git_tag(self, project_id):
         project = self.get(project_id)
         git = Git(project.checkout_dir, project.repo_url)
         return git.tag()
 
-    def git_log(self, project_id, branch):
+    def git_log(self, project_id):
         project = self.get(project_id)
         git = Git(project.checkout_dir, project.repo_url)
-        return git.log(branch)
+        return git.log()
 
 projects = ProjectsService()

@@ -169,7 +169,7 @@ def api_project_tags(id):
 @authorize
 def api_project_branch_commits(id, branch):
     projects.git_clone(id)
-    return jsonify(dict(rc=0, data=projects.git_log(id, branch)))
+    return jsonify(dict(rc=0, data=projects.git_log(id)))
 
 # 获取所有hosts
 @app.route("/api/hosts", methods=["GET"])

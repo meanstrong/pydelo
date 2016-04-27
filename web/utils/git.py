@@ -15,7 +15,14 @@ class Git(object):
         self.dest = dest
         self.url = url
 
-    def branch(self):
+    def local_branch(self):
+        shell = "cd {0} && git fetch -q -a && git branch".format(self.dest)
+        stdout = LocalShell.check_output(shell, shell=True)
+        stdout = stdout.strip().split("\n")
+        stdout = [s.strip("* ") for s in stdout]
+        return stdout
+
+    def remote_branch(self):
         shell = "cd {0} && git fetch -q -a && git branch -r".format(self.dest)
         stdout = LocalShell.check_output(shell, shell=True)
         stdout = stdout.strip().split("\n")
@@ -30,9 +37,8 @@ class Git(object):
         else:
             return []
 
-    def log(self, branch):
-        shell = ("cd {0} && git checkout -q {1} && git fetch -q --all && "
-                 "git log -20 --pretty=\"%h  %an  %s\"").format(self.dest, branch)
+    def log(self):
+        shell = ("cd {0} && git log -20 --pretty=\"%h  %an  %s\"").format(self.dest)
         stdout = LocalShell.check_output(shell, shell=True)
         stdout = stdout.strip().split("\n")
         stdout = [s.split("  ", 2) for s in stdout]
@@ -62,7 +68,13 @@ class Git(object):
                 "cd {0} && git checkout {1}".format(self.dest, tag),
                 shell=True)
         else:
-            LocalShell.check_call(
-                "cd {0} && git checkout -B {1} -t origin/{1} && git pull -q origin {1} && git reset --hard {2}".format(
-                    self.dest, branch, version),
-                shell=True)
+            if branch in self.local_branch():
+                LocalShell.check_call(
+                    "cd {0} && git checkout {1} && git pull -q origin {1} && git reset --hard {2}".format(
+                        self.dest, branch, version),
+                        shell=True)
+            else:
+                LocalShell.check_call(
+                    "cd {0} && git checkout -b {1} -t origin/{1} && git pull -q origin {1} && git reset --hard {2}".format(
+                        self.dest, branch, version),
+                        shell=True)
