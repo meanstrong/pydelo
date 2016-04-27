@@ -57,7 +57,9 @@ class UsersService(Base):
             return True
         session = sessions.first(session=session)
         if session is not None:
-            if (session.expired-datetime.now()).total_seconds() > 0:
+            delta = session.expired-datetime.now()
+            # if (session.expired-datetime.now()).total_seconds() > 0:
+            if (delta.microseconds + (delta.seconds + delta.days * 24 * 3600) * 10**6) / 10**6 > 0:
                 return True
         return False
 
