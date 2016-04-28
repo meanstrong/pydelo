@@ -204,7 +204,9 @@ def create_hosts():
 @authorize
 def create_users():
     apikey = ''.join(random.choice(string.letters+string.digits) for _ in range(32))
-    users.create(apikey=apikey, **request.form.to_dict())
+    user_params = request.form.to_dict();
+    user_params["password"] = md5(user_params["password"].encode("utf-8")).hexdigest().upper()
+    users.create(apikey=apikey, **user_params)
     return jsonify(dict(rc=0))
 
 @app.route("/api/users", methods=["GET"])
