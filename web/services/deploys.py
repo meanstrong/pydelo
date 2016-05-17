@@ -32,6 +32,12 @@ class DeploysService(Base):
         a = deploy.project, deploy.host
         t.start()
 
+    def build(self, deploy):
+        t = threading.Thread(target=build_thread, args=(deploy,))
+        # TODO 当我不使用下面的语句时，project和host貌似在线程里面会没有值，也许我要把lazy值设置成select或者其他
+        a = deploy.project, deploy.host
+        t.start()
+
 deploys = DeploysService()
 
 def rollback_thread(service, deploy):
@@ -160,3 +166,27 @@ def deploy_thread(service, deploy):
         service.update(deploy, progress=100, status=1)
     finally:
         ssh.close()
+
+def build_thread(deploy):
+    # before checkout
+    git = Git(deploy.project.checkout_dir, deploy.project.repo_url)
+    before_checkout = deploy.project.before_checkout.replace("\r", "").replace("\n", " && ")
+    logger.debug("before_checkout"+before_checkout)
+    if before_checkout:
+        LocalShell.check_call(
+            "WORKSPACE='{0}' && mkdir -p $WORKSPACE && cd $WORKSPACE && {1}".format(
+                deploy.project.checkout_dir, before_checkout),
+            shell=True)
+    # checkout
+    git.clone()
+    if deploy.mode == 0:
+        git.checkout(deploy.branch, deploy.version)
+    else:
+        git.checkout(tag=deploy.version)
+    # after checkout
+    after_checkout = deploy.project.after_checkout.replace("\r", "").replace("\n", " && ")
+    if after_checkout:
+        LocalShell.check_call(
+            "WORKSPACE='{0}' && cd $WORKSPACE && {1}".format(
+                deploy.project.checkout_dir, after_checkout),
+            shell=True)
