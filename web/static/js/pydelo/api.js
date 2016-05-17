@@ -38,7 +38,7 @@ function login(data, callback){
 
 function account_change_password(data, callback){
     $.ajax({
-        url: "/api/accounts",
+        url: "/api/accounts/password",
         type: "PUT",
         data: data,
         success : callback,

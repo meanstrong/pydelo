@@ -29,7 +29,7 @@ def error(err):
     return jsonify(dict(rc=err.rc, msg=err.msg))
 
 
-@app.route("/api/accounts", methods=["PUT"])
+@app.route("/api/accounts/password", methods=["PUT"])
 @authorize
 def api_update_accounts():
     password = request.form.get("password")
