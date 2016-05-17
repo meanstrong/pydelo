@@ -38,12 +38,12 @@ def api_update_accounts():
     return jsonify(dict(rc=0))
 
 
-@app.route("/api/users/login", methods=["POST"])
+@app.route("/api/login", methods=["POST"])
 def api_user_login():
     username = request.form.get("username")
     password = request.form.get("password")
     sign = users.login(username, password)
-    return jsonify(dict(rc=0, data=sign))
+    return jsonify(dict(rc=0, data=dict(sign=sign)))
 
 @app.route("/api/deploys", methods=["GET"])
 @authorize

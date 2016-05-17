@@ -33,7 +33,7 @@ function check_return(data){
 }
 
 function login(data, callback){
-    $.post("/api/users/login", data, callback, "json");
+    $.post("/api/login", data, callback, "json");
 }
 
 function account_change_password(data, callback){
