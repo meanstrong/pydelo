@@ -13,7 +13,4 @@ DB_PASS = "abc$#@!8008CBA"
 DB_NAME = "pydelo"
 
 # -- web app config --
-#SECRET_KEY = "secret-key"
-#SESSION_COOKIE_NAME = "pydelo"
-#PERMANENT_SESSION_LIFETIME = 3600 * 24 * 30
-#SITE_COOKIE = "pydelo-ck"
+MAX_DEPLOY_HISTORY = 5 # deploy host上保存的最大历史版本数量

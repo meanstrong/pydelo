@@ -13,6 +13,7 @@ from web.utils.git import Git
 from web.utils.localshell import LocalShell
 from web.utils.remoteshell import RemoteShell
 from web.utils.error import Error
+import web.config as config
 
 logger = Logger("deploy service")
 
@@ -122,8 +123,8 @@ def deploy_thread(service, deploy):
 
         logger.debug("before deploy:")
         rc, stdout, stderr = ssh.exec_command(
-            "WORKSPACE='{0}' && cd $WORKSPACE && ls -1t | tail -n +20 | xargs rm -rf".format(
-                deploy.project.deploy_history_dir))
+            "WORKSPACE='{0}' && cd $WORKSPACE && ls -1t | tail -n +{1} | xargs rm -rf".format(
+                deploy.project.deploy_history_dir, config.MAX_DEPLOY_HISTORY))
         if rc:
             raise Error(11000)
         before_deploy = deploy.project.before_deploy.replace("\r", "").replace("\n", " && ")
