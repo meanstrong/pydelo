@@ -22,13 +22,13 @@ class DeploysService(Base):
     __model__ = Deploys
 
     def deploy(self, deploy):
-        t = threading.Thread(target=deploy_thread, args=(self, deploy))
+        t = threading.Thread(target=deploy_thread, args=(self, deploy), name="pydelo-deploy[%d]" % deploy.id)
         # TODO 当我不使用下面的语句时，project和host貌似在线程里面会没有值，也许我要把lazy值设置成select或者其他
         a = deploy.project, deploy.host
         t.start()
 
     def rollback(self, deploy):
-        t = threading.Thread(target=rollback_thread, args=(self, deploy))
+        t = threading.Thread(target=rollback_thread, args=(self, deploy), name="pydelo-deploy[%d]" % deploy.id)
         # TODO 当我不使用下面的语句时，project和host貌似在线程里面会没有值，也许我要把lazy值设置成select或者其他
         a = deploy.project, deploy.host
         t.start()
@@ -102,9 +102,9 @@ def deploy_thread(service, deploy):
         # checkout
         git.clone()
         if deploy.mode == 0:
-            git.checkout(deploy.branch, deploy.version)
+            git.checkout_branch(deploy.branch, deploy.version)
         else:
-            git.checkout(tag=deploy.version)
+            git.checkout_tag(deploy.version)
         service.update(deploy, progress=33)
         # after checkout
         after_checkout = deploy.project.after_checkout.replace("\r", "").replace("\n", " && ")
@@ -181,9 +181,9 @@ def build_thread(deploy):
     # checkout
     git.clone()
     if deploy.mode == 0:
-        git.checkout(deploy.branch, deploy.version)
+        git.checkout_branch(deploy.branch, deploy.version)
     else:
-        git.checkout(tag=deploy.version)
+        git.checkout_tag(deploy.version)
     # after checkout
     after_checkout = deploy.project.after_checkout.replace("\r", "").replace("\n", " && ")
     if after_checkout:

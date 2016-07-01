@@ -156,20 +156,23 @@ def api_update_project_by_id(id):
 @app.route("/api/projects/<int:id>/branches", methods=["GET"])
 @authorize
 def api_project_branches(id):
-    projects.git_clone(id)
-    return jsonify(dict(rc=0, data=projects.git_branch(id)))
+    project = projects.get(id)
+    projects.git_clone(project)
+    return jsonify(dict(rc=0, data=projects.git_branch(project)))
 
 @app.route("/api/projects/<int:id>/tags", methods=["GET"])
 @authorize
 def api_project_tags(id):
-    projects.git_clone(id)
-    return jsonify(dict(rc=0, data=projects.git_tag(id)))
+    project = projects.get(id)
+    projects.git_clone(project)
+    return jsonify(dict(rc=0, data=projects.git_tag(project)))
 
 @app.route("/api/projects/<int:id>/branches/<branch>/commits", methods=["GET"])
 @authorize
 def api_project_branch_commits(id, branch):
-    projects.git_clone(id)
-    return jsonify(dict(rc=0, data=projects.git_log(id)))
+    project = projects.get(id)
+    projects.git_clone(project)
+    return jsonify(dict(rc=0, data=projects.git_branch_commit_log(project, branch)))
 
 # 获取所有hosts
 @app.route("/api/hosts", methods=["GET"])

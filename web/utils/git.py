@@ -61,20 +61,21 @@ class Git(object):
         if rc != 0:
             raise Error(12000)
 
-    def checkout(self, branch=None, version=None, tag=None):
-        logger.debug("checkout:")
-        if branch is None or version is None:
+    def checkout_tag(self, tag):
+        logger.debug("checkout to tag: %s" % tag)
+        LocalShell.check_call(
+            "cd {0} && git checkout {1}".format(self.dest, tag),
+            shell=True)
+
+    def checkout_branch(self, branch, version=""):
+        logger.debug("checkout branch:")
+        if branch in self.local_branch():
             LocalShell.check_call(
-                "cd {0} && git checkout {1}".format(self.dest, tag),
-                shell=True)
+                "cd {0} && git checkout {1} && git pull -q origin {1} && git reset --hard {2}".format(
+                    self.dest, branch, version),
+                    shell=True)
         else:
-            if branch in self.local_branch():
-                LocalShell.check_call(
-                    "cd {0} && git checkout {1} && git pull -q origin {1} && git reset --hard {2}".format(
-                        self.dest, branch, version),
-                        shell=True)
-            else:
-                LocalShell.check_call(
-                    "cd {0} && git checkout -b {1} -t origin/{1} && git pull -q origin {1} && git reset --hard {2}".format(
-                        self.dest, branch, version),
-                        shell=True)
+            LocalShell.check_call(
+                "cd {0} && git checkout -b {1} -t origin/{1} && git pull -q origin {1} && git reset --hard {2}".format(
+                    self.dest, branch, version),
+                    shell=True)
