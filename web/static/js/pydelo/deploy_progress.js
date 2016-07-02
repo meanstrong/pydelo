@@ -6,12 +6,15 @@ $.extend({
             var width = "width: "+data["progress"].toString()+"%;";
             $("#progress-bar").attr("style", width);
             if (data["status"] == 2){
-                $("#progress-msg").text("running");
+                $("#progress-status").text("running");
+                $("#progress-msg").text(data["comment"]);
                 setTimeout("$.progress("+deploy_id+")",3000);
             } else if (data["status"] == 1){
-                $("#progress-msg").text("success");
+                $("#progress-status").text("success");
+                $("#progress-msg").text(data["comment"]);
             }else{
-                $("#progress-msg").text("fail");
+                $("#progress-status").text("fail");
+                $("#progress-msg").text(data["comment"]);
             }
         });
     }

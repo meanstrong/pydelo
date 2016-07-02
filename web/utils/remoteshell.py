@@ -4,6 +4,7 @@ __author__ = 'Rocky Peng'
 
 import time
 import paramiko
+from subprocess import CalledProcessError
 
 from web.utils.log import Logger
 logger = Logger("RemoteShell")
@@ -47,6 +48,12 @@ class RemoteShell(object):
         logger.debug("stdout: %s" % stdout)
         logger.warn("stderr: %s" % stderr)
         return exit_status, stdout, stderr
+
+    def check_call(self, shell):
+        rc, stdout, stderr = self.exec_command(shell)
+        if rc:
+            raise CalledProcessError(rc, shell, stdout+"\n"+stderr)
+        return rc
 
     def close(self):
         self.ssh.close()

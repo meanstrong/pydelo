@@ -53,6 +53,5 @@ class LocalShell(object):
         logger.debug("stdout: %s" % stdout)
         logger.warn("stderr: %s" % stderr)
         if rc:
-            raise CalledProcessError(rc, cmd, stdout)
+            raise CalledProcessError(rc, cmd, stdout+"\n"+stderr)
         return rc
-

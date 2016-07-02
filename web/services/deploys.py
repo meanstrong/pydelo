@@ -39,6 +39,15 @@ class DeploysService(Base):
         a = deploy.project, deploy.host
         t.start()
 
+    def append_comment(self, deploy, comment):
+        sql = ("UPDATE {table} SET comment = CONCAT(comment, :comment) where id = {id}").format(
+                table=self.__model__.__tablename__,
+                #comment=comment,
+                id=deploy.id
+                )
+        db.session.execute(sql, {"comment": comment})
+        db.session.commit()
+
 deploys = DeploysService()
 
 def rollback_thread(service, deploy):
@@ -93,75 +102,77 @@ def deploy_thread(service, deploy):
         git = Git(deploy.project.checkout_dir, deploy.project.repo_url)
         before_checkout = deploy.project.before_checkout.replace("\r", "").replace("\n", " && ")
         logger.debug("before_checkout"+before_checkout)
+        service.append_comment(deploy, "before checkout:\n")
         if before_checkout:
-            LocalShell.check_call(
-                "WORKSPACE='{0}' && mkdir -p $WORKSPACE && cd $WORKSPACE && {1}".format(
-                    deploy.project.checkout_dir, before_checkout),
-                shell=True)
+            cmd = "WORKSPACE='{0}' && mkdir -p $WORKSPACE && cd $WORKSPACE && {1}".format(
+                    deploy.project.checkout_dir, before_checkout)
+            LocalShell.check_call(cmd, shell=True)
+        service.append_comment(deploy, "OK!\n")
         service.update(deploy, progress=17)
         # checkout
+        service.append_comment(deploy, "checkout:\n")
         git.clone()
         if deploy.mode == 0:
             git.checkout_branch(deploy.branch, deploy.version)
         else:
             git.checkout_tag(deploy.version)
+        service.append_comment(deploy, "OK!\n")
         service.update(deploy, progress=33)
         # after checkout
         after_checkout = deploy.project.after_checkout.replace("\r", "").replace("\n", " && ")
+        service.append_comment(deploy, "after checkout:\n")
         if after_checkout:
-            LocalShell.check_call(
-                "WORKSPACE='{0}' && cd $WORKSPACE && {1}".format(
-                    deploy.project.checkout_dir, after_checkout),
-                shell=True)
+            cmd = "WORKSPACE='{0}' && cd $WORKSPACE && {1}".format(
+                    deploy.project.checkout_dir, after_checkout)
+            LocalShell.check_call(cmd, shell=True)
+        service.append_comment(deploy, "OK!\n")
         service.update(deploy, progress=50)
         # before deploy
-        rc, stdout, stderr = ssh.exec_command(
+        service.append_comment(deploy, "before deploy:\n")
+        ssh.check_call(
             "mkdir -p {0}".format(
                 os.path.join(deploy.project.deploy_history_dir, deploy.softln_filename)))
-        if rc:
-            raise Error(11003)
 
         logger.debug("before deploy:")
-        rc, stdout, stderr = ssh.exec_command(
+        ssh.check_call(
             "WORKSPACE='{0}' && cd $WORKSPACE && ls -1t | tail -n +{1} | xargs rm -rf".format(
                 deploy.project.deploy_history_dir, config.MAX_DEPLOY_HISTORY))
-        if rc:
-            raise Error(11000)
         before_deploy = deploy.project.before_deploy.replace("\r", "").replace("\n", " && ")
         if before_deploy:
-            rc, stdout, stderr = ssh.exec_command(
+            ssh.check_call(
                 "WORKSPACE='{0}' && cd $WORKSPACE && {1}".format(
                     deploy.project.deploy_dir, before_deploy))
-            if rc:
-                raise Error(11000)
+        service.append_comment(deploy, "OK!\n")
         service.update(deploy, progress=67)
         # deploy
+        service.append_comment(deploy, "deploy:\n")
         logger.debug("deploy:")
         logger.debug("rsync:")
-        shell = ("rsync -avzq --rsh=\"sshpass -p {ssh_pass} ssh -p {ssh_port}\" --exclude='.git' {local_dest}/ {ssh_user}@{ssh_host}:{remote_dest}/").format(
+        cmd = ("rsync -avzq --rsh=\"sshpass -p {ssh_pass} ssh -p {ssh_port}\" --exclude='.git' {local_dest}/ {ssh_user}@{ssh_host}:{remote_dest}/").format(
             local_dest=deploy.project.checkout_dir,
             remote_dest=os.path.join(deploy.project.deploy_history_dir, deploy.softln_filename),
             ssh_user=deploy.host.ssh_user,
             ssh_host=deploy.host.ssh_host,
             ssh_port=deploy.host.ssh_port,
             ssh_pass=deploy.host.ssh_pass)
-        LocalShell.check_call(shell, shell=True)
-        rc,stdout, stderr = ssh.exec_command("ln -snf {0} {1}".format(
+        LocalShell.check_call(cmd, shell=True)
+        ssh.check_call("ln -snf {0} {1}".format(
             os.path.join(deploy.project.deploy_history_dir, deploy.softln_filename), deploy.project.deploy_dir))
-        if rc:
-            raise Error(11001)
+        service.append_comment(deploy, "OK!\n")
         service.update(deploy, progress=83)
 
         # after deploy
+        service.append_comment(deploy, "after deploy:\n")
         logger.debug("after deploy:")
         after_deploy = deploy.project.after_deploy.replace("\r", "").replace("\n", " && ")
         if after_deploy:
-            rc, stdout, stderr = ssh.exec_command(
+            ssh.check_call(
                 "WORKSPACE='{0}' && cd $WORKSPACE && {1}".format(
                     deploy.project.deploy_dir, after_deploy))
-            if rc:
-                raise Error(11002)
-    except Exception:
+        service.append_comment(deploy, "OK!\n")
+    except Exception as err:
+        logger.error(err)
+        service.append_comment(deploy, "Command: "+err.cmd+"\nReturn code: "+str(err.returncode)+"\nOutput: "+err.output)
         service.update(deploy, status=0)
     else:
         service.update(deploy, progress=100, status=1)
