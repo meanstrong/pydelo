@@ -28,15 +28,16 @@ $(document).ready(function() {
                 tr.append($("<td></td>").text("running"));
             }
             tr.append($("<td></td>").text(n["updated_at"]));
+            var action_td = $("<td></td>");
+            action_td.append($("<a href=\"javascript:void(0)\" deploy_id="+n["id"].toString()+" class=\"info\">info</a>"));
             if (n["status"] == 1){
-                tr.append($("<td></td>").append($("<a href=\"javascript:void(0)\" deploy_id="+n["id"].toString()+" class=\"rollback\">rollback</a>")));
-                //tr.append($("<td></td>").text("rollback to this version"));
+                action_td.append($("<span class=\"cut-line\" style=\"margin-right: 5px;margin-left: 5px;\">¦</span>"));
+                action_td.append($("<a href=\"javascript:void(0)\" deploy_id="+n["id"].toString()+" class=\"rollback\">rollback</a>"));
             } else if(n["status"] == 0){
-                tr.append($("<td></td>").append($("<a href=\"javascript:void(0)\" deploy_id="+n["id"].toString()+" class=\"redeploy\">redeploy</a>")));
-                //tr.append($("<td></td>").text("see log"));
-            } else {
-                tr.append($("<td></td>"));
+                action_td.append($("<span class=\"cut-line\" style=\"margin-right: 5px;margin-left: 5px;\">¦</span>"));
+                action_td.append($("<a href=\"javascript:void(0)\" deploy_id="+n["id"].toString()+" class=\"redeploy\">redeploy</a>"));
             }
+            tr.append(action_td);
             $("table tbody").append(tr);
         });
         $(".pagination").empty();
@@ -68,5 +69,9 @@ $(document).ready(function() {
                 var deploy_id = data["data"]["id"]
                 window.location.assign('/deploys/'+deploy_id.toString()+'/progress')
             });
+    });
+    $("tbody").delegate(".info", "click", function () {
+        var deploy_id = $(this).attr("deploy_id");
+        window.location.assign('/deploys/'+deploy_id.toString()+'/progress')
     });
 })
