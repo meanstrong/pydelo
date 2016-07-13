@@ -40,9 +40,9 @@ CREATE TABLE `projects` (
   `before_checkout` text ,
   `after_checkout` text ,
   `before_deploy` text ,
+  `after_deploy` text ,
   `before_rollback` text,
   `after_rollback` text,
-  `after_deploy` text ,
   `created_at` datetime NOT NULL COMMENT 'create time',
   `updated_at` datetime NOT NULL COMMENT 'update time',
   PRIMARY KEY (`id`)
