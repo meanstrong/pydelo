@@ -4,6 +4,7 @@ $(document).ready(function() {
             { "name": $("#name").val(),
               "repo_url": $("#repo_url").val(),
               "checkout_dir": $("#checkout_dir").val(),
+              "target_dir": $("#target_dir").val(),
               "deploy_dir": $("#deploy_dir").val(),
               "deploy_history_dir": $("#deploy_history_dir").val(),
               "before_checkout": $("#before_checkout").val(),

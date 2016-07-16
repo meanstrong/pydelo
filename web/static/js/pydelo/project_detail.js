@@ -6,6 +6,7 @@ $(document).ready(function() {
         $("#name").attr("value", data["name"]);
         $("#repo_url").attr("value", data["repo_url"]);
         $("#checkout_dir").attr("value", data["checkout_dir"]);
+        $("#target_dir").attr("value", data["target_dir"]);
         $("#deploy_dir").attr("value", data["deploy_dir"]);
         $("#deploy_history_dir").attr("value", data["deploy_history_dir"]);
         $("#before_checkout").text(data["before_checkout"]);
@@ -19,6 +20,7 @@ $(document).ready(function() {
             { "name": $("#name").val(),
               "repo_url": $("#repo_url").val(),
               "checkout_dir": $("#checkout_dir").val(),
+              "target_dir": $("#target_dir").val(),
               "deploy_dir": $("#deploy_dir").val(),
               "deploy_history_dir": $("#deploy_history_dir").val(),
               "before_checkout": $("#before_checkout").val(),

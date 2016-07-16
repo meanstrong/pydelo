@@ -13,5 +13,6 @@ users.create(name="demo",
 projects.create(name="pydelo",
                 repo_url="https://github.com/meanstrong/pydelo",
                 checkout_dir="/data/home/rocky/pydelo/test/checkout",
+                target_dir="/data/home/rocky/pydelo/test/target",
                 deploy_dir="/data/home/rocky/pydelo/test/deploy",
                 deploy_history_dir="/data/home/rocky/pydelo/history")

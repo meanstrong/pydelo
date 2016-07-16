@@ -32,11 +32,12 @@ CREATE TABLE `users` (
 DROP TABLE if exists `projects`;
 CREATE TABLE `projects` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL,
-  `repo_url` varchar(200) NOT NULL,
-  `checkout_dir` varchar(200) NOT NULL,
-  `deploy_dir` varchar(200) NOT NULL,
-  `deploy_history_dir` varchar(200) NOT NULL,
+  `name` varchar(64) NOT NULL COMMENT '项目名称',
+  `repo_url` varchar(200) NOT NULL COMMENT '项目git库地址',
+  `checkout_dir` varchar(200) NOT NULL COMMENT '源代码检出目录',
+  `target_dir` varchar(200) NOT NULL COMMENT '部署文件存放目录',
+  `deploy_dir` varchar(200) NOT NULL COMMENT '部署机器上的目标目录',
+  `deploy_history_dir` varchar(200) NOT NULL COMMENT '部署机器上的历史版本目录',
   `before_checkout` text ,
   `after_checkout` text ,
   `before_deploy` text ,
