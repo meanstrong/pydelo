@@ -103,8 +103,11 @@ def deploy_thread(service, deploy):
         before_checkout = deploy.project.before_checkout.replace("\r", "").replace("\n", " && ")
         logger.debug("before_checkout"+before_checkout)
         service.append_comment(deploy, "before checkout:\n")
+        cmd = "mkdir -p {0} && rm -rf {1} && mkdir -p {1}".format(
+                deploy.project.checkout_dir, deploy.project.target_dir)
+        LocalShell.check_call(cmd, shell=True)
         if before_checkout:
-            cmd = "WORKSPACE='{0}' && mkdir -p $WORKSPACE && cd $WORKSPACE && {1}".format(
+            cmd = "WORKSPACE='{0}' && cd $WORKSPACE && {1}".format(
                     deploy.project.checkout_dir, before_checkout)
             LocalShell.check_call(cmd, shell=True)
         service.append_comment(deploy, "OK!\n")
@@ -149,7 +152,7 @@ def deploy_thread(service, deploy):
         logger.debug("deploy:")
         logger.debug("rsync:")
         cmd = ("rsync -avzq --rsh=\"sshpass -p {ssh_pass} ssh -p {ssh_port}\" --exclude='.git' {local_dest}/ {ssh_user}@{ssh_host}:{remote_dest}/").format(
-            local_dest=deploy.project.checkout_dir,
+            local_dest=deploy.project.target_dir,
             remote_dest=os.path.join(deploy.project.deploy_history_dir, deploy.softln_filename),
             ssh_user=deploy.host.ssh_user,
             ssh_host=deploy.host.ssh_host,

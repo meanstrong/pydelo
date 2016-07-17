@@ -150,7 +150,6 @@ def api_get_project_by_id(id):
 @app.route("/api/projects/<int:id>", methods=["PUT"])
 @authorize
 def api_update_project_by_id(id):
-    print request.form.to_dict()
     projects.update(projects.get(id), **request.form.to_dict())
     return jsonify(dict(rc=0))
 
