@@ -29,8 +29,6 @@ class Projects(JsonSerializer, db.Model):
     after_checkout = db.Column(db.Text, default="")
     before_deploy = db.Column(db.Text, default="")
     after_deploy = db.Column(db.Text, default="")
-    before_rollback = db.Column(db.Text, default="")
-    after_rollback = db.Column(db.Text, default="")
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at= db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
 

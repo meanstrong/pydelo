@@ -58,33 +58,40 @@ def rollback_thread(service, deploy):
 
     try:
         # before rollback
+        service.append_comment(deploy, "before rollback:\n")
         logger.debug("before rollback:")
-        before_rollback = deploy.project.before_rollback.replace("\r", "").replace("\n", " && ")
-        if before_rollback:
+        before_deploy = deploy.project.before_deploy.replace("\r", "").replace("\n", " && ")
+        if before_deploy:
             rc, stdout, stderr = ssh.exec_command(
                 "WORKSPACE='{0}' && cd $WORKSPACE && {1}".format(
-                    deploy.project.deploy_dir, before_rollback))
+                    deploy.project.deploy_dir, before_deploy))
             if rc:
                 raise Error(11000)
+        service.append_comment(deploy, "OK!\n")
         service.update(deploy, progress=33)
         # rollback
+        service.append_comment(deploy, "rollback:\n")
         logger.debug("rollback:")
         rc,stdout, stderr = ssh.exec_command("ln -snf {0} {1}".format(
             os.path.join(deploy.project.deploy_history_dir, deploy.softln_filename), deploy.project.deploy_dir))
         if rc:
             raise Error(11001)
+        service.append_comment(deploy, "OK!\n")
         service.update(deploy, progress=67)
 
         # after rollback
+        service.append_comment(deploy, "after rollback:\n")
         logger.debug("after rollback:")
-        after_rollback = deploy.project.after_rollback.replace("\r", "").replace("\n", " && ")
-        if after_rollback:
+        after_deploy = deploy.project.after_deploy.replace("\r", "").replace("\n", " && ")
+        if after_deploy:
             rc, stdout, stderr = ssh.exec_command(
                 "WORKSPACE='{0}' && cd $WORKSPACE && {1}".format(
-                    deploy.project.deploy_dir, after_rollback))
+                    deploy.project.deploy_dir, after_deploy))
             if rc:
                 raise Error(11002)
-    except Exception:
+        service.append_comment(deploy, "OK!\n")
+    except Exception as err:
+        service.append_comment(deploy, "Command: "+err.cmd+"\nReturn code: "+str(err.returncode)+"\nOutput: "+err.output)
         service.update(deploy, status=0)
     else:
         service.update(deploy, progress=100, status=1)
@@ -103,7 +110,7 @@ def deploy_thread(service, deploy):
         before_checkout = deploy.project.before_checkout.replace("\r", "").replace("\n", " && ")
         logger.debug("before_checkout"+before_checkout)
         service.append_comment(deploy, "before checkout:\n")
-        cmd = "mkdir -p {0} && rm -rf {1} && mkdir -p {1}".format(
+        cmd = "mkdir -p {0} && rm -rf {1}/*".format(
                 deploy.project.checkout_dir, deploy.project.target_dir)
         LocalShell.check_call(cmd, shell=True)
         if before_checkout:
