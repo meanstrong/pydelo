@@ -111,7 +111,7 @@ def deploy_thread(service, deploy):
         logger.debug("before_checkout"+before_checkout)
         service.append_comment(deploy, "before checkout:\n")
         cmd = "mkdir -p {0} && rm -rf {1}/*".format(
-                deploy.project.checkout_dir, deploy.project.target_dir)
+                deploy.project.target_dir, deploy.project.target_dir)
         LocalShell.check_call(cmd, shell=True)
         if before_checkout:
             cmd = "WORKSPACE='{0}' && cd $WORKSPACE && {1}".format(
