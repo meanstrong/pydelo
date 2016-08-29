@@ -22,13 +22,19 @@ class DeploysService(Base):
     __model__ = Deploys
 
     def deploy(self, deploy):
-        t = threading.Thread(target=deploy_thread, args=(self, deploy), name="pydelo-deploy[%d]" % deploy.id)
+        if self.find(limit=1, status=2, project_id=deploy.project_id):
+            logger.debug("deploy thread wait in quene")
+            return
+        t = threading.Thread(target=deploy_thread, args=(self, ), name="pydelo-deploy[%d]" % deploy.id)
         # TODO 当我不使用下面的语句时，project和host貌似在线程里面会没有值，也许我要把lazy值设置成select或者其他
         a = deploy.project, deploy.host
         t.start()
 
     def rollback(self, deploy):
-        t = threading.Thread(target=rollback_thread, args=(self, deploy), name="pydelo-deploy[%d]" % deploy.id)
+        if self.find(limit=1, status=2, project_id=deploy.project_id):
+            logger.debug("deploy thread wait in quene")
+            return
+        t = threading.Thread(target=rollback_thread, args=(self, ), name="pydelo-deploy[%d]" % deploy.id)
         # TODO 当我不使用下面的语句时，project和host貌似在线程里面会没有值，也许我要把lazy值设置成select或者其他
         a = deploy.project, deploy.host
         t.start()
@@ -42,7 +48,6 @@ class DeploysService(Base):
     def append_comment(self, deploy, comment):
         sql = ("UPDATE {table} SET comment = CONCAT(comment, :comment) where id = {id}").format(
                 table=self.__model__.__tablename__,
-                #comment=comment,
                 id=deploy.id
                 )
         db.session.execute(sql, {"comment": comment})
@@ -50,7 +55,9 @@ class DeploysService(Base):
 
 deploys = DeploysService()
 
-def rollback_thread(service, deploy):
+def rollback_thread(service):
+    deploy = service.first(status=3)
+    logger.info("deploy thread start: %d" % deploy.id)
     ssh = RemoteShell(host=deploy.host.ssh_host,
                       port=deploy.host.ssh_port,
                       user=deploy.host.ssh_user,
@@ -96,9 +103,14 @@ def rollback_thread(service, deploy):
     else:
         service.update(deploy, progress=100, status=1)
     finally:
+        logger.info("deploy thread end: %d" % deploy.id)
         ssh.close()
+        if service.find(limit=1, status=3, project_id=deploy.project_id):
+            rollback_thread(service)
 
-def deploy_thread(service, deploy):
+def deploy_thread(service):
+    deploy = service.first(status=3)
+    logger.info("deploy thread start: %d" % deploy.id)
     ssh = RemoteShell(host=deploy.host.ssh_host,
                       port=deploy.host.ssh_port,
                       user=deploy.host.ssh_user,
@@ -187,7 +199,10 @@ def deploy_thread(service, deploy):
     else:
         service.update(deploy, progress=100, status=1)
     finally:
+        logger.info("deploy thread end: %d" % deploy.id)
         ssh.close()
+        if service.find(limit=1, status=3, project_id=deploy.project_id):
+            deploy_thread(service)
 
 def build_thread(deploy):
     # before checkout
