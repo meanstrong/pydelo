@@ -25,7 +25,7 @@ class DeploysService(Base):
         if self.find(limit=1, status=2, project_id=deploy.project_id):
             logger.debug("deploy thread wait in quene")
             return
-        t = threading.Thread(target=deploy_thread, args=(self, ), name="pydelo-deploy[%d]" % deploy.id)
+        t = threading.Thread(target=deploy_thread, args=(self, deploy), name="pydelo-deploy[%d]" % deploy.id)
         # TODO 当我不使用下面的语句时，project和host貌似在线程里面会没有值，也许我要把lazy值设置成select或者其他
         a = deploy.project, deploy.host
         t.start()
@@ -34,13 +34,7 @@ class DeploysService(Base):
         if self.find(limit=1, status=2, project_id=deploy.project_id):
             logger.debug("deploy thread wait in quene")
             return
-        t = threading.Thread(target=rollback_thread, args=(self, ), name="pydelo-deploy[%d]" % deploy.id)
-        # TODO 当我不使用下面的语句时，project和host貌似在线程里面会没有值，也许我要把lazy值设置成select或者其他
-        a = deploy.project, deploy.host
-        t.start()
-
-    def build(self, deploy):
-        t = threading.Thread(target=build_thread, args=(deploy,))
+        t = threading.Thread(target=rollback_thread, args=(self, deploy), name="pydelo-deploy[%d]" % deploy.id)
         # TODO 当我不使用下面的语句时，project和host貌似在线程里面会没有值，也许我要把lazy值设置成select或者其他
         a = deploy.project, deploy.host
         t.start()
@@ -55,8 +49,8 @@ class DeploysService(Base):
 
 deploys = DeploysService()
 
-def rollback_thread(service):
-    deploy = service.first(status=3)
+def rollback_thread(service, deploy):
+    deploy = service.first(project_id=deploy.project_id, status=3)
     logger.info("deploy thread start: %d" % deploy.id)
     ssh = RemoteShell(host=deploy.host.ssh_host,
                       port=deploy.host.ssh_port,
@@ -105,11 +99,12 @@ def rollback_thread(service):
     finally:
         logger.info("deploy thread end: %d" % deploy.id)
         ssh.close()
-        if service.find(limit=1, status=3, project_id=deploy.project_id):
-            rollback_thread(service)
+        deploy = service.first(project_id=deploy.project_id, status=3)
+        if deploy:
+            rollback_thread(service, deploy)
 
-def deploy_thread(service):
-    deploy = service.first(status=3)
+def deploy_thread(service, deploy):
+    deploy = service.first(project_id=deploy.project_id, status=3)
     logger.info("deploy thread start: %d" % deploy.id)
     ssh = RemoteShell(host=deploy.host.ssh_host,
                       port=deploy.host.ssh_port,
@@ -201,29 +196,6 @@ def deploy_thread(service):
     finally:
         logger.info("deploy thread end: %d" % deploy.id)
         ssh.close()
-        if service.find(limit=1, status=3, project_id=deploy.project_id):
-            deploy_thread(service)
-
-def build_thread(deploy):
-    # before checkout
-    git = Git(deploy.project.checkout_dir, deploy.project.repo_url)
-    before_checkout = deploy.project.before_checkout.replace("\r", "").replace("\n", " && ")
-    logger.debug("before_checkout"+before_checkout)
-    if before_checkout:
-        LocalShell.check_call(
-            "WORKSPACE='{0}' && mkdir -p $WORKSPACE && cd $WORKSPACE && {1}".format(
-                deploy.project.checkout_dir, before_checkout),
-            shell=True)
-    # checkout
-    git.clone()
-    if deploy.mode == 0:
-        git.checkout_branch(deploy.branch, deploy.version)
-    else:
-        git.checkout_tag(deploy.version)
-    # after checkout
-    after_checkout = deploy.project.after_checkout.replace("\r", "").replace("\n", " && ")
-    if after_checkout:
-        LocalShell.check_call(
-            "WORKSPACE='{0}' && cd $WORKSPACE && {1}".format(
-                deploy.project.checkout_dir, after_checkout),
-            shell=True)
+        deploy = service.first(project_id=deploy.project_id, status=3)
+        if deploy:
+            deploy_thread(service, deploy)
