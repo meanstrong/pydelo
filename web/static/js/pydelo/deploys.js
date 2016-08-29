@@ -20,12 +20,16 @@ $(document).ready(function() {
             tr.append($("<td></td>").text(n["project"]["name"]));
             tr.append($("<td></td>").text(n["branch"]));
             tr.append($("<td></td>").text(n["version"]));
-            if (n["status"] == 1){
+            if (n["status"] == 1) {
                 tr.append($("<td></td>").text("success"));
-            } else if(n["status"] == 0){
+            } else if(n["status"] == 0) {
                 tr.append($("<td></td>").text("fail"));
-            } else {
+            } else if(n["status"] == 2) {
                 tr.append($("<td></td>").text("running"));
+            } else if(n["status"] == 3){
+                tr.append($("<td></td>").text("waiting"));
+            } else {
+                tr.append($("<td></td>").text("unkown"));
             }
             tr.append($("<td></td>").text(n["updated_at"]));
             var action_td = $("<td></td>");

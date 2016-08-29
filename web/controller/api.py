@@ -51,9 +51,14 @@ def api_deploys():
     offset = request.args.get("offset", None, type=int)
     limit = request.args.get("limit", None, type=int)
     if g.user.role == g.user.ROLE["ADMIN"]:
-        return jsonify(dict(rc=0,
-            data=dict(deploys=deploys.find(offset, limit, order_by="updated_at", desc=True),
-                      count=deploys.count())))
+        return jsonify(
+            dict(rc=0,
+                 data=dict(deploys=deploys.find(
+                     offset,
+                     limit,
+                     order_by="updated_at",
+                     desc=True),
+            count=deploys.count())))
     else:
         return jsonify(dict(rc=0,
             data=dict(deploys=deploys.find(offset, limit, order_by="updated_at", desc=True, user_id=g.user.id),
@@ -73,7 +78,7 @@ def api_post_deploy():
         project_id=project_id,
         host_id=host_id,
         mode=mode,
-        status=2,
+        status=3,
         branch=branch,
         version=commit,
         softln_filename=time.strftime("%Y%m%d-%H%M%S") + "-" + commit,
@@ -92,7 +97,7 @@ def update_deploy_by_id(id):
             project_id=deploy.project_id,
             host_id=deploy.host_id,
             mode=deploy.mode,
-            status=2,
+            status=3,
             branch=deploy.branch,
             version=deploy.version,
             softln_filename=deploy.softln_filename)
@@ -104,7 +109,7 @@ def update_deploy_by_id(id):
             project_id=deploy.project_id,
             host_id=deploy.host_id,
             mode=2,
-            status=2,
+            status=3,
             branch=deploy.branch,
             version=deploy.version,
             softln_filename=deploy.softln_filename)

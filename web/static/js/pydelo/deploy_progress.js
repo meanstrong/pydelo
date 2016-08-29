@@ -9,10 +9,14 @@ $.extend({
                 $("#progress-status").text("running");
                 $("#progress-msg").text(data["comment"]);
                 setTimeout("$.progress("+deploy_id+")",3000);
+            } else if (data["status"] == 3){
+                $("#progress-status").text("waiting");
+                $("#progress-msg").text(data["comment"]);
+                setTimeout("$.progress("+deploy_id+")",3000);
             } else if (data["status"] == 1){
                 $("#progress-status").text("success");
                 $("#progress-msg").text(data["comment"]);
-            }else{
+            } else {
                 $("#progress-status").text("fail");
                 $("#progress-msg").text(data["comment"]);
             }
