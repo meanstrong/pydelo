@@ -8,7 +8,7 @@ from web.models.sessions import Sessions
 
 from .base import Base
 
-logger = Logger("session service")
+logger = Logger("web.services.sessions")
 
 
 class SessionsService(Base):

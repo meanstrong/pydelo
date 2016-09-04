@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 import time
 from web.utils.log import Logger
-logger = Logger("WEBHOOK")
+logger = Logger("web.controllers.webhooks")
 
 from web import app
 from web.services.users import users

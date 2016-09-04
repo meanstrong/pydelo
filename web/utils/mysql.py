@@ -2,7 +2,7 @@ import MySQLdb
 import pymysql
 
 from log import Logger
-logger = Logger("MYSQL")
+logger = Logger("web.utils.mysql")
 
 import config
 

@@ -9,7 +9,7 @@ from web.utils.git import Git
 
 from .base import Base
 
-logger = Logger("project service")
+logger = Logger("web.services.projects")
 
 
 class ProjectsService(Base):

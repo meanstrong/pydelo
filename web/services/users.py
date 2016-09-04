@@ -21,7 +21,7 @@ from .base import Base
 from web.utils.error import Error
 from .sessions import sessions
 
-logger = Logger("user service")
+logger = Logger("web.services.users")
 
 
 class UsersService(Base):

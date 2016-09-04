@@ -12,8 +12,10 @@ if sys.version_info > (3,):
 from hashlib import md5
 
 from web.utils.log import Logger
-logger = Logger("API")
+logger = Logger("web.controller.api")
 
+from web import db
+desc = db.desc
 from web import app
 from web.services.users import users
 from web.services.hosts import hosts
@@ -48,20 +50,23 @@ def api_user_login():
 @app.route("/api/deploys", methods=["GET"])
 @authorize
 def api_deploys():
+    deploys.session_commit()
     offset = request.args.get("offset", None, type=int)
     limit = request.args.get("limit", None, type=int)
     if g.user.role == g.user.ROLE["ADMIN"]:
         return jsonify(
             dict(rc=0,
-                 data=dict(deploys=deploys.find(
+                 data=dict(deploys=deploys.all(
                      offset,
                      limit,
-                     order_by="updated_at",
+                     order_by="created_at",
                      desc=True),
             count=deploys.count())))
     else:
         return jsonify(dict(rc=0,
-            data=dict(deploys=deploys.find(offset, limit, order_by="updated_at", desc=True, user_id=g.user.id),
+            data=dict(deploys=deploys.find(user_id=g.user.id)
+                              .order_by(desc("created_at")).limit(limit)
+                              .offset(offset).all(),
                       count=deploys.count(user_id=g.user.id))))
 
 @app.route("/api/deploys", methods=["POST"])
@@ -121,17 +126,9 @@ def update_deploy_by_id(id):
 @app.route("/api/deploys/<int:id>", methods=["GET"])
 @authorize
 def get_deploy_progress_by_id(id):
+    deploys.session_commit()
     deploy = deploys.get(id)
     return jsonify(dict(rc=0, data=deploy))
-
-# @app.route("/api/alldeploys", methods=["GET"])
-# @authorize
-# def api_alldeploys():
-#     offset = request.args.get("offset", None, type=int)
-#     limit = request.args.get("limit", None, type=int)
-#     return jsonify(dict(rc=0,
-#         data=dict(deploys=deploys.all(offset, limit, order_by="updated_at", desc=True),
-#                   count=deploys.count())))
 
 @app.route("/api/projects", methods=["GET"])
 @authorize

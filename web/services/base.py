@@ -4,42 +4,40 @@ __author__ = 'Rocky Peng'
 
 from web import db
 
+from web.utils.log import Logger
+logger = Logger("web.services.base")
+
 
 class Base(object):
     __model__ = None
 
+    def __init__(self, session=None):
+        self.session = session or db.session()
+
     def save(self, model):
-        db.session.add(model)
-        db.session.commit()
+        self.session.add(model)
+        self.session.commit()
         return model
     
-    def find(self, offset=None, limit=None, order_by=None, desc=False, **kargs):
-        query = self.__model__.query.filter_by(**kargs)
-        if order_by is not None:
-            if desc:
-                query = query.order_by(db.desc(order_by))
-            else:
-                query = query.order_by(order_by)
-        if offset is not None:
-            query = query.offset(offset)
-        if limit is not None:
-            query = query.limit(limit)
-        return query.all()
+    def find(self, **kargs):
+        query = self.session.query(self.__model__).filter_by(**kargs)
+        return query
 
     def first(self, **kargs):
-        return self.__model__.query.filter_by(**kargs).first()
+        return self.session.query(self.__model__).filter_by(**kargs).first()
 
     def get(self, id):
-        return self.__model__.query.get(id)
+        self.session.expire_all()
+        return self.session.query(self.__model__).get(id)
 
     def get_or_404(self, id):
-        self.__model__.query.get_or_404(id)
+        self.session.query(self.__model__).get_or_404(id)
 
     def count(self, **kargs):
-        return self.__model__.query.filter_by(**kargs).count()
+        return self.session.query(self.__model__).filter_by(**kargs).count()
 
     def all(self, offset=None, limit=None, order_by=None, desc=False):
-        query = self.__model__.query
+        query = self.session.query(self.__model__)
         if order_by is not None:
             if desc:
                 query = query.order_by(db.desc(order_by))
@@ -60,6 +58,5 @@ class Base(object):
         self.save(model)
         return model
 
-    def delete(self, model):
-        db.session.delete(model)
-        db.session.commit()
+    def session_commit(self):
+        self.session.commit()

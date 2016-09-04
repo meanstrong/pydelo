@@ -91,7 +91,7 @@ CREATE TABLE `deploys` (
   `branch` varchar(32) NOT NULL,
   `version` varchar(32) NOT NULL,
   `progress` int(10) unsigned NOT NULL COMMENT '',
-  `status` int(1) unsigned NOT NULL COMMENT '0:fail, 1:success, 2:running',
+  `status` int(1) unsigned NOT NULL COMMENT '0-fail;1-success;2-running;3-waiting',
   `softln_filename` varchar(64) NOT NULL,
   `comment` text ,
   `created_at` datetime NOT NULL COMMENT 'create time',

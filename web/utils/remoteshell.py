@@ -7,7 +7,7 @@ import paramiko
 from subprocess import CalledProcessError
 
 from web.utils.log import Logger
-logger = Logger("RemoteShell")
+logger = Logger("web.utils.remoteshell")
 
 
 class RemoteShell(object):
