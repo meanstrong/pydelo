@@ -3,6 +3,7 @@
 __author__ = 'Rocky Peng'
 
 from web import db
+from web import db_session
 
 from web.utils.log import Logger
 logger = Logger("web.services.base")
@@ -12,7 +13,7 @@ class Base(object):
     __model__ = None
 
     def __init__(self, session=None):
-        self.session = session or db.session()
+        self.session = session or db_session
 
     def save(self, model):
         self.session.add(model)
@@ -60,3 +61,7 @@ class Base(object):
 
     def session_commit(self):
         self.session.commit()
+
+    def __del__(self):
+        logger.info("session close.")
+        self.session.close()

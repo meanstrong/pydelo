@@ -8,7 +8,6 @@ import threading
 from web import db
 from web.utils.log import Logger
 from web.models.deploys import Deploys
-thread_session = db.create_scoped_session
 
 from .base import Base
 from web.utils.git import Git
@@ -57,8 +56,7 @@ class DeploysService(Base):
 deploys = DeploysService()
 
 def rollback_thread(project_id):
-    session = thread_session()
-    deploys = DeploysService(session)
+    deploys = DeploysService()
     deploy = deploys.first(project_id=project_id, status=3)
     logger.info("deploy thread start: %d" % deploy.id)
     ssh = RemoteShell(host=deploy.host.ssh_host,
@@ -119,8 +117,7 @@ def rollback_thread(project_id):
             deploys.deploy(deploy)
 
 def deploy_thread(project_id):
-    session = thread_session()
-    deploys = DeploysService(session)
+    deploys = DeploysService()
     deploy = deploys.first(project_id=project_id, status=3)
     if not deploy:
         logger.info("no deploy wait in quene.")

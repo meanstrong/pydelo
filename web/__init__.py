@@ -16,5 +16,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{0}:{1}@{2}:{3}/{4}'.fo
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.json_encoder = JSONEncoder
 db = SQLAlchemy(app)
+db_session = db.session
 
 from .controller import api, webhooks, login, deploys, project, host, users
