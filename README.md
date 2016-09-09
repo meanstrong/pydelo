@@ -24,7 +24,7 @@ apt-get install rsync sshpass
 git clone git@github.com:meanstrong/pydelo.git
 cd pydelo
 pip install -r pip_requirements.txt # 建议使用virtualenv来部署
-mysql -h root -p pydelo < db-schema/db-schema.sql  # create database and tables
+mysql -h localhost -u root -p pydelo < db-schema/db-schema.sql  # create database and tables
 vi web/config.py # set up module config such as mysql connector
 python init.py   # 添加默认用户、项目数据
 
