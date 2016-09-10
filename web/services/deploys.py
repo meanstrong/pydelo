@@ -187,16 +187,30 @@ def deploy_thread(project_id):
         deploys.append_comment(deploy, "deploy:\n")
         logger.debug("deploy:")
         logger.debug("rsync:")
-        cmd = ("rsync -avzq --rsh=\"sshpass -p {ssh_pass} ssh -p {ssh_port}\" "
-               "--exclude='.git' {local_dest}/ {ssh_user}@{ssh_host}:"
-               "{remote_dest}/").format(local_dest=deploy.project.target_dir,
-                                        remote_dest=os.path.join(
-                                            deploy.project.deploy_history_dir,
-                                            deploy.softln_filename),
-                                        ssh_user=deploy.host.ssh_user,
-                                        ssh_host=deploy.host.ssh_host,
-                                        ssh_port=deploy.host.ssh_port,
-                                        ssh_pass=deploy.host.ssh_pass)
+        if deploy.host.ssh_method == 0:
+            cmd = ("rsync -avzq "
+                   "--rsh=\"sshpass -p {ssh_pass} ssh -p {ssh_port}\" "
+                   "--exclude='.git' {local_dest}/ {ssh_user}@{ssh_host}:"
+                   "{remote_dest}/"
+                  ).format(local_dest=deploy.project.target_dir,
+                           remote_dest=os.path.join(
+                               deploy.project.deploy_history_dir,
+                               deploy.softln_filename),
+                           ssh_user=deploy.host.ssh_user,
+                           ssh_host=deploy.host.ssh_host,
+                           ssh_port=deploy.host.ssh_port,
+                           ssh_pass=deploy.host.ssh_pass)
+        else:
+            cmd = ("rsync -avzq --exclude='.git' {local_dest}/ "
+                   "{ssh_user}@{ssh_host}:{remote_dest}/"
+                  ).format(local_dest=deploy.project.target_dir,
+                           remote_dest=os.path.join(
+                               deploy.project.deploy_history_dir,
+                               deploy.softln_filename),
+                           ssh_user=deploy.host.ssh_user,
+                           ssh_host=deploy.host.ssh_host,
+                           ssh_port=deploy.host.ssh_port,
+                           ssh_pass=deploy.host.ssh_pass)
         LocalShell.check_call(cmd, shell=True)
         ssh.check_call("ln -snf {0} {1}".format(
             os.path.join(deploy.project.deploy_history_dir,

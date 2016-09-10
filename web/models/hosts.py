@@ -22,6 +22,7 @@ class Hosts(JsonSerializer, db.Model):
     ssh_host = db.Column(db.String(32))
     ssh_port = db.Column(db.Integer)
     ssh_user = db.Column(db.String(64))
+    ssh_method = db.Column(db.Integer())
     ssh_pass = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at= db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
