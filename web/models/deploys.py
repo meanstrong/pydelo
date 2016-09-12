@@ -1,9 +1,9 @@
 #!/usr/local/bin/python
 # -*- coding:utf-8 -*-
-__author__ = 'Rocky Peng'
-
 from web import db
 from web.utils.jsonencoder import JsonSerializer
+
+__author__ = 'Rocky Peng'
 
 
 class Deploys(JsonSerializer, db.Model):
@@ -19,8 +19,12 @@ class Deploys(JsonSerializer, db.Model):
     softln_filename = db.Column(db.String(64))
     comment = db.Column(db.Text, default="")
     created_at = db.Column(db.DateTime, default=db.func.now())
-    updated_at= db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
+    updated_at = db.Column(db.DateTime, default=db.func.now(),
+                           onupdate=db.func.now())
 
-    user = db.relationship("Users", backref=db.backref("deploys", lazy="dynamic"))
-    project = db.relationship("Projects", backref=db.backref("deploys", lazy="dynamic"))
-    host = db.relationship("Hosts", backref=db.backref("deploys", lazy="dynamic"))
+    user = db.relationship("Users",
+                           backref=db.backref("deploys", lazy="dynamic"))
+    project = db.relationship("Projects",
+                              backref=db.backref("deploys", lazy="dynamic"))
+    host = db.relationship("Hosts",
+                           backref=db.backref("deploys", lazy="dynamic"))

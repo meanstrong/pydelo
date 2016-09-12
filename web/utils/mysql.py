@@ -1,10 +1,9 @@
 import MySQLdb
 import pymysql
+import config
 
 from log import Logger
 logger = Logger("web.utils.mysql")
-
-import config
 
 
 class PyMySQL(object):

@@ -13,4 +13,5 @@ DB_PASS = "abc$#@!8008CBA"
 DB_NAME = "pydelo"
 
 # -- web app config --
-MAX_DEPLOY_HISTORY = 30 # deploy host上保存的最大历史版本数量
+# deploy host上保存的最大历史版本数量
+MAX_DEPLOY_HISTORY = 30

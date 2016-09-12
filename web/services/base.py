@@ -1,12 +1,10 @@
 #!/usr/local/bin/python
 # -*- coding:utf-8 -*-
-__author__ = 'Rocky Peng'
-
 from web import db
 from web import db_session
-
 from web.utils.log import Logger
 logger = Logger("web.services.base")
+__author__ = 'Rocky Peng'
 
 
 class Base(object):
@@ -19,7 +17,7 @@ class Base(object):
         self.session.add(model)
         self.session.commit()
         return model
-    
+
     def find(self, **kargs):
         query = self.session.query(self.__model__).filter_by(**kargs)
         return query
@@ -54,7 +52,7 @@ class Base(object):
         return self.save(self.__model__(**kargs))
 
     def update(self, model, **kargs):
-        for k,v in kargs.items():
+        for k, v in kargs.items():
             setattr(model, k, v)
         self.save(model)
         return model

@@ -6,12 +6,10 @@ v1.0.0:
 v1.0.1:
     判断logger属性是否已经有handler，若有则不再需要增加handler
 """
-
-__version__ = '1.0.1'
-__author__ = 'Rocky Peng'
-
 import logging
 import platform
+__version__ = '1.0.1'
+__author__ = 'Rocky Peng'
 if platform.system() == 'Windows':
     from ctypes import windll, c_ulong
 
@@ -68,7 +66,6 @@ class Logger(object):
     DEBUG_MODE = False
     GLOBAL_FILENAME = 'default.log'
 
-
     def __init__(self, name, filename=None):
         self.logger = logging.getLogger(name)
         if len(self.logger.handlers):
@@ -78,7 +75,8 @@ class Logger(object):
 
         sh = logging.StreamHandler()
         sh.setFormatter(formatter)
-        #sh.setLevel(logging.DEBUG)
+
+        # sh.setLevel(logging.DEBUG)
         sh.setLevel(logging.DEBUG if self.DEBUG_MODE else logging.INFO)
         self.logger.addHandler(sh)
         self.stream = sh.stream
@@ -110,6 +108,7 @@ class Logger(object):
     @color_text_decorator
     def error(self, string):
         return self.logger.error(string)
+
 
 if __name__ == '__main__':
     Logger.DEBUG_MODE = True

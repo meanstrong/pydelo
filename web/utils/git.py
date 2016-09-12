@@ -1,12 +1,10 @@
 #!/usr/local/bin/python
 # -*- coding:utf-8 -*-
-__author__ = 'Rocky Peng'
-
 from web.utils.localshell import LocalShell
-from web.utils.log import Logger
 from web.utils.error import Error
-
+from web.utils.log import Logger
 logger = Logger("web.utils.git")
+__author__ = 'Rocky Peng'
 
 
 class Git(object):
@@ -26,7 +24,8 @@ class Git(object):
         shell = "cd {0} && git fetch -q -a && git branch -r".format(self.dest)
         stdout = LocalShell.check_output(shell, shell=True)
         stdout = stdout.strip().split("\n")
-        stdout = [s.strip(" ").split("/", 1)[1] for s in stdout if "->" not in s]
+        stdout = [s.strip(" ").split("/", 1)[1] for s in stdout if "->" not in
+                  s]
         return stdout
 
     def tag(self):
@@ -38,7 +37,8 @@ class Git(object):
             return []
 
     def log(self):
-        shell = ("cd {0} && git log -20 --pretty=\"%h  %an  %s\"").format(self.dest)
+        shell = ("cd {0} && git log -20 --pretty=\"%h  %an  %s\""
+                 ).format(self.dest)
         stdout = LocalShell.check_output(shell, shell=True)
         stdout = stdout.strip().split("\n")
         stdout = [s.split("  ", 2) for s in stdout]
@@ -49,11 +49,16 @@ class Git(object):
 
     def clone(self):
         logger.debug("clone repo:")
-        shell = ("mkdir -p {0} && cd {0} && git clone -q {1} .").format(self.dest, self.url)
+        shell = ("mkdir -p {0} && cd {0} && git clone -q {1} ."
+                 ).format(self.dest, self.url)
         rc = LocalShell.call(shell, shell=True)
+
         # destination path '.' already exists and is not an empty directory.
         if rc == 128:
-            shell = ("cd {0} && git clean -xdfq && git reset -q --hard && git remote update && git checkout -q master && git remote prune origin && git pull -q --all --tags && git branch | grep -v \\* | xargs git branch -D").format(self.dest)
+            shell = ("cd {0} && git clean -xdfq && git reset -q --hard && git "
+                     "remote update && git checkout -q master && git remote "
+                     "prune origin && git pull -q --all --tags && git branch "
+                     "| grep -v \\* | xargs git branch -D").format(self.dest)
             rc = LocalShell.call(shell, shell=True)
             # branch name required
             if rc == 123:
@@ -70,12 +75,13 @@ class Git(object):
     def checkout_branch(self, branch, version=""):
         logger.debug("checkout branch:")
         if branch in self.local_branch():
-            LocalShell.check_call(
-                "cd {0} && git checkout -q {1} && git pull -q origin {1} && git reset --hard {2}".format(
-                    self.dest, branch, version),
-                    shell=True)
+            LocalShell.check_call("cd {0} && git checkout -q {1} && git pull "
+                                  "-q origin {1} && git reset --hard {2}"
+                                  .format(self.dest, branch, version),
+                                  shell=True)
         else:
-            LocalShell.check_call(
-                "cd {0} && git checkout -q -b {1} -t origin/{1} && git pull -q origin {1} && git reset --hard {2}".format(
-                    self.dest, branch, version),
-                    shell=True)
+            LocalShell.check_call("cd {0} && git checkout -q -b {1} -t "
+                                  "origin/{1} && git pull -q origin {1} && "
+                                  "git reset --hard {2}"
+                                  .format(self.dest, branch, version),
+                                  shell=True)

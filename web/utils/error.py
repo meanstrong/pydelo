@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 __author__ = 'Rocky Peng'
 
+
 class Error(Exception):
     MAPS = {
         10000: "income parameters error",

@@ -1,15 +1,12 @@
 #!/usr/local/bin/python
 # -*- coding:utf-8 -*-
-__author__ = 'Rocky Peng'
-
 from web import db
-from web.utils.log import Logger
 from web.models.projects import Projects
 from web.utils.git import Git
-
 from .base import Base
-
+from web.utils.log import Logger
 logger = Logger("web.services.projects")
+__author__ = 'Rocky Peng'
 
 
 class ProjectsService(Base):

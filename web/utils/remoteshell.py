@@ -1,13 +1,12 @@
 #!/usr/local/bin/python
 # -*- coding:utf-8 -*-
-__author__ = 'Rocky Peng'
-
 import time
 import paramiko
 from subprocess import CalledProcessError
 
 from web.utils.log import Logger
 logger = Logger("web.utils.remoteshell")
+__author__ = 'Rocky Peng'
 
 
 class RemoteShell(object):
@@ -22,7 +21,8 @@ class RemoteShell(object):
     def connect(self):
         self.ssh = paramiko.SSHClient()
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        self.ssh.connect(self.host, self.port, self.user, self.passwd, timeout=10)
+        self.ssh.connect(self.host, self.port, self.user, self.passwd,
+                         timeout=10)
 
     def exec_command(self, shell):
         logger.debug("remote shell: %s" % shell)

@@ -1,11 +1,10 @@
 #!/usr/local/bin/python
 # -*- coding:utf-8 -*-
-__author__ = 'Rocky Peng'
-
 from subprocess import Popen, PIPE, CalledProcessError
 
 from web.utils.log import Logger
 logger = Logger("web.utils.localshell")
+__author__ = 'Rocky Peng'
 
 
 class LocalShell(object):

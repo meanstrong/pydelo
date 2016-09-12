@@ -1,14 +1,11 @@
 #!/usr/local/bin/python
 # -*- coding:utf-8 -*-
-__author__ = 'Rocky Peng'
-
 from web import db
-from web.utils.log import Logger
 from web.models.sessions import Sessions
-
 from .base import Base
-
+from web.utils.log import Logger
 logger = Logger("web.services.sessions")
+__author__ = 'Rocky Peng'
 
 
 class SessionsService(Base):

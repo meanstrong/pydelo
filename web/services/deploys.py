@@ -1,22 +1,20 @@
 #!/usr/local/bin/python
 # -*- coding:utf-8 -*-
-__author__ = 'Rocky Peng'
-
 import traceback
 import os
 import threading
-from web import db
-from web.utils.log import Logger
-from web.models.deploys import Deploys
 
+from web import db
+from web.models.deploys import Deploys
 from .base import Base
 from web.utils.git import Git
 from web.utils.localshell import LocalShell
 from web.utils.remoteshell import RemoteShell
 from web.utils.error import Error
 import web.config as config
-
+from web.utils.log import Logger
 logger = Logger("web.deploys.deploys")
+__author__ = 'Rocky Peng'
 
 
 class DeploysService(Base):
@@ -55,6 +53,7 @@ class DeploysService(Base):
 
 deploys = DeploysService()
 
+
 def rollback_thread(project_id):
     deploys = DeploysService()
     deploy = deploys.first(project_id=project_id, status=3)
@@ -80,7 +79,7 @@ def rollback_thread(project_id):
         # rollback
         deploys.append_comment(deploy, "rollback:\n")
         logger.debug("rollback:")
-        rc,stdout, stderr = ssh.exec_command("ln -snf {0} {1}".format(
+        rc, stdout, stderr = ssh.exec_command("ln -snf {0} {1}".format(
             os.path.join(deploy.project.deploy_history_dir,
                          deploy.softln_filename),
             deploy.project.deploy_dir))
@@ -104,8 +103,6 @@ def rollback_thread(project_id):
     except Exception as err:
         traceback.print_exc()
         deploys.append_comment(deploy, repr(err))
-                               # ("Command: "+err.cmd+"\nReturn code: "+
-                               #  str(err.returncode)+"\nOutput: "+err.output))
         deploys.update(deploy, status=0)
     else:
         deploys.update(deploy, progress=100, status=1)
@@ -115,6 +112,7 @@ def rollback_thread(project_id):
         deploy = deploys.first(project_id=deploy.project_id, status=3)
         if deploy:
             deploys.deploy(deploy)
+
 
 def deploy_thread(project_id):
     deploys = DeploysService()
@@ -192,25 +190,25 @@ def deploy_thread(project_id):
                    "--rsh=\"sshpass -p {ssh_pass} ssh -p {ssh_port}\" "
                    "--exclude='.git' {local_dest}/ {ssh_user}@{ssh_host}:"
                    "{remote_dest}/"
-                  ).format(local_dest=deploy.project.target_dir,
-                           remote_dest=os.path.join(
-                               deploy.project.deploy_history_dir,
-                               deploy.softln_filename),
-                           ssh_user=deploy.host.ssh_user,
-                           ssh_host=deploy.host.ssh_host,
-                           ssh_port=deploy.host.ssh_port,
-                           ssh_pass=deploy.host.ssh_pass)
+                   ).format(local_dest=deploy.project.target_dir,
+                            remote_dest=os.path.join(
+                                deploy.project.deploy_history_dir,
+                                deploy.softln_filename),
+                            ssh_user=deploy.host.ssh_user,
+                            ssh_host=deploy.host.ssh_host,
+                            ssh_port=deploy.host.ssh_port,
+                            ssh_pass=deploy.host.ssh_pass)
         else:
             cmd = ("rsync -avzq --exclude='.git' {local_dest}/ "
                    "{ssh_user}@{ssh_host}:{remote_dest}/"
-                  ).format(local_dest=deploy.project.target_dir,
-                           remote_dest=os.path.join(
-                               deploy.project.deploy_history_dir,
-                               deploy.softln_filename),
-                           ssh_user=deploy.host.ssh_user,
-                           ssh_host=deploy.host.ssh_host,
-                           ssh_port=deploy.host.ssh_port,
-                           ssh_pass=deploy.host.ssh_pass)
+                   ).format(local_dest=deploy.project.target_dir,
+                            remote_dest=os.path.join(
+                                deploy.project.deploy_history_dir,
+                                deploy.softln_filename),
+                            ssh_user=deploy.host.ssh_user,
+                            ssh_host=deploy.host.ssh_host,
+                            ssh_port=deploy.host.ssh_port,
+                            ssh_pass=deploy.host.ssh_pass)
         LocalShell.check_call(cmd, shell=True)
         ssh.check_call("ln -snf {0} {1}".format(
             os.path.join(deploy.project.deploy_history_dir,
@@ -233,8 +231,6 @@ def deploy_thread(project_id):
         traceback.print_exc()
         logger.error(err)
         deploys.append_comment(deploy, repr(err))
-                               # ("Command: "+err.cmd+"\nReturn code: "+
-                               #  str(err.returncode)+"\nOutput: "+err.output))
         deploys.update(deploy, status=0)
     else:
         deploys.update(deploy, progress=100, status=1)
