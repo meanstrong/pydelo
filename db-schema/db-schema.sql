@@ -54,6 +54,7 @@ CREATE TABLE `hosts` (
   `ssh_host` varchar(32) NOT NULL,
   `ssh_port` int(10) unsigned NOT NULL,
   `ssh_user` varchar(64) NOT NULL,
+  `ssh_method` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '0-password;1-public key',
   `ssh_pass` varchar(100) NOT NULL,
   `created_at` datetime NOT NULL COMMENT 'create time',
   `updated_at` datetime NOT NULL COMMENT 'update time',
